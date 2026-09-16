@@ -1,0 +1,64 @@
+{
+    "name": "bpmore/statamic-furrow",
+    "description": "Two fieldtypes that make it hard to publish an inaccessible data table or chart: one dataset, rendered as a correctly marked up table and as a server-rendered SVG chart with its data table beside it.",
+    "keywords": [
+        "statamic",
+        "accessibility",
+        "a11y",
+        "wcag",
+        "table",
+        "chart",
+        "svg"
+    ],
+    "license": "proprietary",
+    "type": "statamic-addon",
+    "homepage": "https://hada.farm",
+    "authors": [
+        {
+            "name": "Brent Passmore",
+            "homepage": "https://hada.farm"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "statamic/cms": "^6.31"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.11 || ^11.0",
+        "pestphp/pest": "^3.8 || ^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bpmore\\Furrow\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bpmore\\Furrow\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "pest"
+    },
+    "extra": {
+        "statamic": {
+            "name": "Furrow",
+            "slug": "statamic-furrow",
+            "description": "Accessible data tables and charts. One dataset, two renderings, both correct."
+        },
+        "laravel": {
+            "providers": [
+                "Bpmore\\Furrow\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "pixelfear/composer-dist-plugin": true
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,10 @@
+/vendor
+/node_modules
+composer.lock
+.phpunit.result.cache
+.DS_Store
+/.phpunit.cache
+/resources/dist/build/.vite
+.playwright-mcp
+/tests/a11y/fixtures/
+/tests/a11y/screenshots/
