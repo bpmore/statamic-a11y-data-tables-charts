@@ -80,7 +80,13 @@ template:
 {{ furrow:table field="figures" }}
 {{ furrow:chart field="picture" }}
 {{ furrow:chart :data="my_dataset" type="line" summary="Up and to the right." }}
+{{ furrow:chart :data="figures" type="line" caption="The same figures, as lines" }}
 ```
+
+`:data` takes an array a template built, or a table field's own value, so one
+table can be drawn again as another chart type. `caption` replaces the caption
+for that rendering; two renderings of one dataset on a page need two captions,
+because each is a landmark named by its caption.
 
 ## What the output is
 

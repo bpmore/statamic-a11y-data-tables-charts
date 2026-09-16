@@ -183,11 +183,17 @@ it('renders through Antlers as a string, as a pair, and through the tag', functi
     // parse could not show the tag working.
     $this->withFakeViews();
     $this->viewShouldReturnRaw('layout', '{{ template_content }}');
-    $this->viewShouldReturnRaw('report', '{{ figures }}|{{ figures:caption }}|{{ picture }}|{{ furrow:chart field="picture" }}|{{ furrow:table field="figures" }}|{{ furrow:styles }}');
+    $this->viewShouldReturnRaw('report', '{{ figures }}|{{ figures:caption }}|{{ picture }}|{{ furrow:chart field="picture" }}|{{ furrow:table field="figures" }}|{{ furrow:styles }}|{{ furrow:chart :data="figures" type="bar" caption="The same apples, as bars" }}');
 
     $html = $this->get('/reports/four')->assertOk()->getContent();
 
-    [$table, $caption, $chart, $tagChart, $tagTable, $styles] = explode('|', $html);
+    [$table, $caption, $chart, $tagChart, $tagTable, $styles, $again] = explode('|', $html);
+
+    // A table field drawn again by the tag, as another type with its own caption.
+    expect($again)->toContain('furrow-chart--bar');
+    expect($again)->toContain('<title id="furrow-chart-');
+    expect($again)->toContain('The same apples, as bars');
+    expect($again)->toContain('>15<');
 
     expect($table)->toContain('<table');
     expect($caption)->toBe('Apples per year');
