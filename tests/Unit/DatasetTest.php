@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
 
 it('names columns from every header row over them, using abbr where there is one', function () {
     $dataset = Dataset::fromArray([

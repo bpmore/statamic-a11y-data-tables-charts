@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
-use Bpmore\Furrow\Dataset\Dataset;
-use Bpmore\Furrow\Support\Html;
-use Bpmore\Furrow\Table\TableRenderer;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Support\Html;
+use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 
 /**
  * A dataset as a server-rendered inline SVG with its data table beside it.
@@ -58,7 +58,7 @@ final class ChartRenderer
             throw PaletteFails::from($check);
         }
 
-        $id = Html::id($options['id'] ?? 'furrow-chart-'.substr(sha1(json_encode($dataset->toArray()) ?: ''), 0, 8));
+        $id = Html::id($options['id'] ?? 'a11y-data-chart-'.substr(sha1(json_encode($dataset->toArray()) ?: ''), 0, 8));
         $chart = ChartData::from($dataset);
         $summary = trim((string) ($options['summary'] ?? ''));
         $summary = $summary === '' ? Summary::of($chart) : $summary;
@@ -71,13 +71,13 @@ final class ChartRenderer
         // The table. Collapsed only on an explicit ask; anything else,
         // including every value that reads like "off", leaves it open.
         $collapsed = ($options['table'] ?? null) === 'collapsed';
-        $table = (new TableRenderer)->render($dataset, ['id' => $id.'-table', 'class' => 'furrow-chart__table', 'labelledby' => $id.'-data-label']);
+        $table = (new TableRenderer)->render($dataset, ['id' => $id.'-table', 'class' => 'a11y-data-chart__table', 'labelledby' => $id.'-data-label']);
 
-        $class = trim('furrow-chart furrow-chart--'.$type.' '.(string) ($options['class'] ?? ''));
+        $class = trim('a11y-data-chart a11y-data-chart--'.$type.' '.(string) ($options['class'] ?? ''));
 
         return '<figure'.Html::attrs(['class' => $class, 'id' => $id]).'>'
             .$svg
-            .'<details'.Html::attrs(['class' => 'furrow-chart__data', 'open' => ! $collapsed]).'>'
+            .'<details'.Html::attrs(['class' => 'a11y-data-chart__data', 'open' => ! $collapsed]).'>'
             .'<summary><span'.Html::attrs(['id' => $id.'-data-label']).'>'.Html::e('Data table:').'</span> '.Html::e($dataset->caption).'</summary>'
             .$table
             .'</details>'
@@ -115,28 +115,28 @@ final class ChartRenderer
             $out .= '<defs>';
             foreach ($series as $i => $s) {
                 $pattern = Shapes::pattern($i);
-                $out .= '<pattern'.Html::attrs(['id' => $id.'-p'.$i, 'class' => 'furrow-pattern furrow-pattern--'.$pattern['name'], 'patternUnits' => 'userSpaceOnUse', 'width' => 8, 'height' => 8]).'>'
-                    .'<rect'.Html::attrs(['class' => 'furrow-pattern__fill', 'width' => 8, 'height' => 8, 'fill' => $palette->colour($i)]).'/>'
-                    .($pattern['marks'] === '' ? '' : '<g'.Html::attrs(['class' => 'furrow-pattern__mark', 'fill' => $palette->background, 'stroke' => $palette->background, 'stroke-width' => 1.4]).'>'.$pattern['marks'].'</g>')
+                $out .= '<pattern'.Html::attrs(['id' => $id.'-p'.$i, 'class' => 'a11y-data-pattern a11y-data-pattern--'.$pattern['name'], 'patternUnits' => 'userSpaceOnUse', 'width' => 8, 'height' => 8]).'>'
+                    .'<rect'.Html::attrs(['class' => 'a11y-data-pattern__fill', 'width' => 8, 'height' => 8, 'fill' => $palette->colour($i)]).'/>'
+                    .($pattern['marks'] === '' ? '' : '<g'.Html::attrs(['class' => 'a11y-data-pattern__mark', 'fill' => $palette->background, 'stroke' => $palette->background, 'stroke-width' => 1.4]).'>'.$pattern['marks'].'</g>')
                     .'</pattern>';
             }
             $out .= '</defs>';
         }
 
         // Gridlines and the value axis.
-        $out .= '<g class="furrow-axis-group">';
+        $out .= '<g class="a11y-data-axis-group">';
         foreach ($scale->ticks() as $tick) {
             $y = $this->n($scale->at($tick));
             $isZero = abs($tick) < 1e-9;
             $out .= '<line'.Html::attrs([
-                'class' => $isZero ? 'furrow-axis furrow-axis--baseline' : 'furrow-grid',
+                'class' => $isZero ? 'a11y-data-axis a11y-data-axis--baseline' : 'a11y-data-grid',
                 'x1' => $this->n($left), 'x2' => $this->n($left + $plotW), 'y1' => $y, 'y2' => $y,
                 'stroke' => 'currentColor', 'stroke-opacity' => $isZero ? null : '0.2', 'stroke-width' => $isZero ? 1.5 : 1,
             ]).'/>';
-            $out .= $this->text(Scale::label($tick), $left - 10, $scale->at($tick) + self::FONT * 0.35, 'end', 'furrow-tick');
+            $out .= $this->text(Scale::label($tick), $left - 10, $scale->at($tick) + self::FONT * 0.35, 'end', 'a11y-data-tick');
         }
         $out .= '<line'.Html::attrs([
-            'class' => 'furrow-axis furrow-axis--value',
+            'class' => 'a11y-data-axis a11y-data-axis--value',
             'x1' => $this->n($left), 'x2' => $this->n($left), 'y1' => $this->n($top), 'y2' => $this->n($top + $plotH),
             'stroke' => 'currentColor', 'stroke-width' => 1.5,
         ]).'/>';
@@ -144,7 +144,7 @@ final class ChartRenderer
             $cx = 12 + self::FONT * 0.8;
             $cy = $top + $plotH / 2;
             $out .= '<text'.Html::attrs([
-                'class' => 'furrow-axis-title', 'x' => $this->n($cx), 'y' => $this->n($cy), 'fill' => 'currentColor',
+                'class' => 'a11y-data-axis-title', 'x' => $this->n($cx), 'y' => $this->n($cy), 'fill' => 'currentColor',
                 'font-size' => self::FONT, 'text-anchor' => 'middle', 'transform' => 'rotate(-90 '.$this->n($cx).' '.$this->n($cy).')',
             ]).'>'.Html::e($axisTitle).'</text>';
         }
@@ -156,12 +156,12 @@ final class ChartRenderer
         $slot = $plotW / $count;
         $longest = max(array_map(fn ($c) => mb_strlen($c), $categories ?: ['']));
         $every = max(1, (int) ceil(($longest * self::FONT * 0.6 + 8) / $slot));
-        $out .= '<g class="furrow-categories">';
+        $out .= '<g class="a11y-data-categories">';
         foreach ($categories as $i => $category) {
             if ($i % $every !== 0) {
                 continue;
             }
-            $out .= $this->text($category, $left + $slot * ($i + 0.5), $top + $plotH + self::FONT + 8, 'middle', 'furrow-category');
+            $out .= $this->text($category, $left + $slot * ($i + 0.5), $top + $plotH + self::FONT + 8, 'middle', 'a11y-data-category');
         }
         $out .= '</g>';
 
@@ -172,35 +172,35 @@ final class ChartRenderer
 
         // The legend, above the plot.
         if ($legend['items'] !== []) {
-            $out .= '<g class="furrow-legend">';
+            $out .= '<g class="a11y-data-legend">';
             foreach ($legend['items'] as $i => $item) {
                 $x = $left + $item['x'];
                 $y = 12 + $item['y'];
                 if ($isLine) {
                     $marker = Shapes::marker($i);
-                    $out .= '<path'.Html::attrs(['class' => 'furrow-legend__line', 'd' => 'M'.$this->n($x).' '.$this->n($y + 7).' H'.$this->n($x + 28), 'fill' => 'none', 'stroke' => $palette->colour($i), 'stroke-width' => 2.5, 'stroke-dasharray' => Shapes::dash($i)]).'/>';
-                    $out .= '<path'.Html::attrs(['class' => 'furrow-legend__marker', 'data-series' => $i, 'data-shape' => $marker['name'], 'd' => $marker['d'], 'transform' => 'translate('.$this->n($x + 14).' '.$this->n($y + 7).')', 'fill' => $palette->background, 'stroke' => $palette->colour($i), 'stroke-width' => 2]).'/>';
+                    $out .= '<path'.Html::attrs(['class' => 'a11y-data-legend__line', 'd' => 'M'.$this->n($x).' '.$this->n($y + 7).' H'.$this->n($x + 28), 'fill' => 'none', 'stroke' => $palette->colour($i), 'stroke-width' => 2.5, 'stroke-dasharray' => Shapes::dash($i)]).'/>';
+                    $out .= '<path'.Html::attrs(['class' => 'a11y-data-legend__marker', 'data-series' => $i, 'data-shape' => $marker['name'], 'd' => $marker['d'], 'transform' => 'translate('.$this->n($x + 14).' '.$this->n($y + 7).')', 'fill' => $palette->background, 'stroke' => $palette->colour($i), 'stroke-width' => 2]).'/>';
                 } else {
-                    $out .= '<rect'.Html::attrs(['class' => 'furrow-legend__swatch', 'x' => $this->n($x), 'y' => $this->n($y), 'width' => 14, 'height' => 14, 'fill' => 'url(#'.$id.'-p'.$i.')', 'stroke' => 'currentColor', 'stroke-width' => 1]).'/>';
+                    $out .= '<rect'.Html::attrs(['class' => 'a11y-data-legend__swatch', 'x' => $this->n($x), 'y' => $this->n($y), 'width' => 14, 'height' => 14, 'fill' => 'url(#'.$id.'-p'.$i.')', 'stroke' => 'currentColor', 'stroke-width' => 1]).'/>';
                 }
-                $out .= $this->text($series[$i]->name, $x + ($isLine ? 34 : 20), $y + self::FONT - 1, 'start', 'furrow-legend__label');
+                $out .= $this->text($series[$i]->name, $x + ($isLine ? 34 : 20), $y + self::FONT - 1, 'start', 'a11y-data-legend__label');
             }
             $out .= '</g>';
         }
 
         $style = '<style>'
             .'@media (forced-colors: active){'
-            .'.furrow-pattern__fill{fill:CanvasText}'
-            .'.furrow-pattern__mark{fill:Canvas;stroke:Canvas}'
-            .'.furrow-bar,.furrow-legend__swatch{stroke:CanvasText}'
-            .'.furrow-line,.furrow-legend__line{stroke:CanvasText}'
-            .'.furrow-marker,.furrow-legend__marker{fill:Canvas;stroke:CanvasText}'
-            .'.furrow-grid{stroke:GrayText;stroke-opacity:1}'
+            .'.a11y-data-pattern__fill{fill:CanvasText}'
+            .'.a11y-data-pattern__mark{fill:Canvas;stroke:Canvas}'
+            .'.a11y-data-bar,.a11y-data-legend__swatch{stroke:CanvasText}'
+            .'.a11y-data-line,.a11y-data-legend__line{stroke:CanvasText}'
+            .'.a11y-data-marker,.a11y-data-legend__marker{fill:Canvas;stroke:CanvasText}'
+            .'.a11y-data-grid{stroke:GrayText;stroke-opacity:1}'
             .'}'
             .'</style>';
 
         return '<svg'.Html::attrs([
-            'class' => 'furrow-chart__svg',
+            'class' => 'a11y-data-chart__svg',
             'viewBox' => '0 0 '.$this->n($width).' '.$this->n($height),
             'preserveAspectRatio' => 'xMidYMid meet',
             'role' => 'img',
@@ -228,9 +228,9 @@ final class ChartRenderer
         $labelled = $barW >= 22;
         $zero = $scale->at(0);
 
-        $out = '<g class="furrow-bars">';
+        $out = '<g class="a11y-data-bars">';
         foreach ($series as $i => $s) {
-            $out .= '<g'.Html::attrs(['class' => 'furrow-series', 'data-series' => $i]).'>';
+            $out .= '<g'.Html::attrs(['class' => 'a11y-data-series', 'data-series' => $i]).'>';
             foreach ($s->values as $c => $v) {
                 if ($v === null) {
                     continue;
@@ -240,12 +240,12 @@ final class ChartRenderer
                 $top = min($y, $zero);
                 $h = abs($y - $zero);
                 $out .= '<rect'.Html::attrs([
-                    'class' => 'furrow-bar',
+                    'class' => 'a11y-data-bar',
                     'x' => $this->n($x), 'y' => $this->n($top), 'width' => $this->n(max(0.5, $barW - 2)), 'height' => $this->n(max(0, $h)),
                     'fill' => 'url(#'.$id.'-p'.$i.')', 'stroke' => 'currentColor', 'stroke-width' => 1,
                 ]).'/>';
                 if ($labelled) {
-                    $out .= $this->text($s->labels[$c], $x + ($barW - 2) / 2, $v >= 0 ? $top - 4 : $top + $h + self::FONT, 'middle', 'furrow-value', self::FONT - 1);
+                    $out .= $this->text($s->labels[$c], $x + ($barW - 2) / 2, $v >= 0 ? $top - 4 : $top + $h + self::FONT, 'middle', 'a11y-data-value', self::FONT - 1);
                 }
             }
             $out .= '</g>';
@@ -257,7 +257,7 @@ final class ChartRenderer
     /** @param  list<Series>  $series */
     private function lines(array $series, Scale $scale, Palette $palette, float $left, float $slot): string
     {
-        $out = '<g class="furrow-lines">';
+        $out = '<g class="a11y-data-lines">';
         $direct = count($series) <= 3;
 
         foreach ($series as $i => $s) {
@@ -279,23 +279,23 @@ final class ChartRenderer
                 $pen = true;
                 $last = [$x, $y];
                 $markers .= '<path'.Html::attrs([
-                    'class' => 'furrow-marker', 'data-series' => $i, 'data-shape' => $marker['name'],
+                    'class' => 'a11y-data-marker', 'data-series' => $i, 'data-shape' => $marker['name'],
                     'd' => $marker['d'], 'transform' => 'translate('.$this->n($x).' '.$this->n($y).')',
                     'fill' => $palette->background, 'stroke' => $palette->colour($i), 'stroke-width' => 2,
                 ]).'/>';
             }
 
-            $out .= '<g'.Html::attrs(['class' => 'furrow-series', 'data-series' => $i]).'>';
+            $out .= '<g'.Html::attrs(['class' => 'a11y-data-series', 'data-series' => $i]).'>';
             if ($d !== '') {
                 $out .= '<path'.Html::attrs([
-                    'class' => 'furrow-line', 'd' => $d, 'fill' => 'none',
+                    'class' => 'a11y-data-line', 'd' => $d, 'fill' => 'none',
                     'stroke' => $palette->colour($i), 'stroke-width' => 2.5, 'stroke-dasharray' => Shapes::dash($i),
                     'stroke-linejoin' => 'round', 'stroke-linecap' => 'round',
                 ]).'/>';
             }
             $out .= $markers;
             if ($direct && $last !== null && count($series) > 1) {
-                $out .= $this->text($s->name, $last[0] + 10, $last[1] + self::FONT * 0.35, 'start', 'furrow-line__label');
+                $out .= $this->text($s->name, $last[0] + 10, $last[1] + self::FONT * 0.35, 'start', 'a11y-data-line__label');
             }
             $out .= '</g>';
         }

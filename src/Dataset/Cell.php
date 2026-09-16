@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 /** One cell as the author entered it: its text and how many cells it covers. */
 final class Cell

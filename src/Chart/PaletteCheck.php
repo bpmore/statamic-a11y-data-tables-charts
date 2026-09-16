@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
 /**
  * Non-text contrast (WCAG 1.4.11): every series colour against the

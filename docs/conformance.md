@@ -1,16 +1,16 @@
-# Furrow: WCAG 2.1 AA conformance note
+# A11y Data Tables & Charts: WCAG 2.1 AA conformance note
 
-**Product:** `bpmore/statamic-furrow` 0.1.0 (unreleased)
+**Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.0 (unreleased)
 **Target:** WCAG 2.1 Level AA, with 2.2 AA noted where met
 **Date:** 15 September 2026
 **Prepared by:** Had A Farm LLC, from the addon's own checks
 
 ## 1. Scope of the claim
 
-The claim covers what Furrow itself produces: the markup of the rendered
+The claim covers what the addon itself produces: the markup of the rendered
 table, the markup of the rendered chart with its data table, the stylesheet
-`{{ furrow:styles }}` inlines, and the two control panel editors,
-`furrow_table` and `furrow_chart`.
+`{{ a11y_data:styles }}` inlines, and the two control panel editors,
+`a11y_table` and `a11y_chart`.
 
 It does not cover:
 
@@ -20,7 +20,7 @@ It does not cover:
 - **What authors type.** A caption that reads "Table 1" passes the caption
   check. Whether a caption, a header or a summary is a good one is editorial.
 - **Statamic's own control panel.** Where a Statamic component fell short,
-  Furrow used a native element instead, and §7 says where.
+  the addon used a native element instead, and §7 says where.
 - **A palette the site has set to fail.** The check refuses a failing palette
   at three points, but it checks only what it is told: series colours against
   the configured background. A site whose pages are not the colour it

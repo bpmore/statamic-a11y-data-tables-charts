@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Tags;
+namespace Bpmore\A11yDataTablesCharts\Tags;
 
-use Bpmore\Furrow\Chart\ChartRenderer;
-use Bpmore\Furrow\Statamic\Normalise;
-use Bpmore\Furrow\Statamic\Palettes;
-use Bpmore\Furrow\Statamic\Rendered;
-use Bpmore\Furrow\Table\TableRenderer;
+use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
+use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Palettes;
+use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
+use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 use Illuminate\Contracts\Support\Arrayable;
 use Statamic\Tags\Tags;
 
 /**
- * `{{ furrow:styles }}`: the addon's stylesheet, inline, once per page.
- * `{{ furrow:table field="handle" }}` and `{{ furrow:chart field="handle" }}`:
+ * `{{ a11y_data:styles }}`: the addon's stylesheet, inline, once per page.
+ * `{{ a11y_data:table field="handle" }}` and `{{ a11y_data:chart field="handle" }}`:
  * a field of the current context, rendered. Either also takes `:data` with
  * a dataset: an array a template built, or a table field's value, so one
  * table can be drawn again as a different chart. `caption` replaces the
@@ -24,11 +24,11 @@ use Statamic\Tags\Tags;
  * A field renders itself when printed (`{{ my_table }}`), so the tag is
  * for the cases where a template wants to be explicit about it.
  */
-final class Furrow extends Tags
+final class A11yData extends Tags
 {
     public function styles(): string
     {
-        $css = (string) file_get_contents(__DIR__.'/../../resources/css/furrow.css');
+        $css = (string) file_get_contents(__DIR__.'/../../resources/css/a11y-data.css');
 
         return '<style>'.$css.'</style>';
     }
@@ -54,7 +54,7 @@ final class Furrow extends Tags
                 'id' => $this->params->get('id'),
                 'class' => $this->params->get('class'),
                 'summary' => $this->params->get('summary'),
-                'table' => $this->params->get('table', config('statamic-furrow.data_table', 'open')),
+                'table' => $this->params->get('table', config('statamic-a11y-data-tables-charts.data_table', 'open')),
                 'palette' => Palettes::configured(),
             ]);
         }

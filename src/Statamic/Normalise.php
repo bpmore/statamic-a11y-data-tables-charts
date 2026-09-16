@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Statamic;
+namespace Bpmore\A11yDataTablesCharts\Statamic;
 
-use Bpmore\Furrow\Dataset\Cell;
-use Bpmore\Furrow\Dataset\Column;
-use Bpmore\Furrow\Dataset\Row;
+use Bpmore\A11yDataTablesCharts\Dataset\Cell;
+use Bpmore\A11yDataTablesCharts\Dataset\Column;
+use Bpmore\A11yDataTablesCharts\Dataset\Row;
 
 /**
  * The stored shape of a table, with every key present and every value

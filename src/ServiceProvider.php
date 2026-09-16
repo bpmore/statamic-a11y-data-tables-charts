@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow;
+namespace Bpmore\A11yDataTablesCharts;
 
 use Statamic\Providers\AddonServiceProvider;
 
@@ -19,7 +19,7 @@ use Statamic\Providers\AddonServiceProvider;
  */
 class ServiceProvider extends AddonServiceProvider
 {
-    public const PACKAGE = 'bpmore/statamic-furrow';
+    public const PACKAGE = 'bpmore/statamic-a11y-data-tables-charts';
 
     protected $config = true;
 
@@ -29,13 +29,13 @@ class ServiceProvider extends AddonServiceProvider
     ];
 
     /**
-     * The front-end stylesheet, published to public/vendor/statamic-furrow/css.
-     * `{{ furrow:styles }}` inlines the same file, which is the route most
+     * The front-end stylesheet, published to public/vendor/statamic-a11y-data-tables-charts/css.
+     * `{{ a11y_data:styles }}` inlines the same file, which is the route most
      * sites should take: one fewer request, and nothing to publish.
      */
     protected $publishables = [
         __DIR__.'/../resources/css' => 'css',
     ];
 
-    protected $viewNamespace = 'furrow';
+    protected $viewNamespace = 'a11y-data';
 }

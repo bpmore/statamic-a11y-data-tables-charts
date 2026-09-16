@@ -6,15 +6,15 @@ declare(strict_types=1);
  * Renders the fixture pages the front-end check reads: every chart type,
  * a complex table, negatives and gaps, a collapsed data table, and a
  * many-series chart, each in a plain page with the addon's stylesheet
- * inlined the way `{{ furrow:styles }}` inlines it.
+ * inlined the way `{{ a11y_data:styles }}` inlines it.
  *
  *   php tests/a11y/render-fixtures.php
  */
 
 require __DIR__.'/../../vendor/autoload.php';
 
-use Bpmore\Furrow\Chart\ChartRenderer;
-use Bpmore\Furrow\Table\TableRenderer;
+use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
+use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 
 $out = __DIR__.'/fixtures';
 if (! is_dir($out)) {
@@ -69,7 +69,7 @@ $twelve = [
 
 $c = new ChartRenderer;
 $t = new TableRenderer;
-$css = file_get_contents(__DIR__.'/../../resources/css/furrow.css');
+$css = file_get_contents(__DIR__.'/../../resources/css/a11y-data.css');
 
 $page = fn (string $title, string $body) => '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>'.htmlspecialchars($title).'</title><style>body{font-family:system-ui,sans-serif;max-width:60rem;margin:0 auto;padding:1rem;color:#1a1a1a;background:#fff;line-height:1.5}</style><style>'.$css.'</style></head><body><main><h1>'.htmlspecialchars($title).'</h1>'.$body.'</main></body></html>';
 

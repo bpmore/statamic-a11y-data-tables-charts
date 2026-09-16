@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Chart\Contrast;
-use Bpmore\Furrow\Chart\Palette;
-use Bpmore\Furrow\Chart\PaletteCheck;
+use Bpmore\A11yDataTablesCharts\Chart\Contrast;
+use Bpmore\A11yDataTablesCharts\Chart\Palette;
+use Bpmore\A11yDataTablesCharts\Chart\PaletteCheck;
 
 /**
  * Discriminating test 3: contrast rejection, against values computed by

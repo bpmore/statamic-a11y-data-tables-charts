@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 /**
  * Where every cell lands once colspan and rowspan are applied: the layout

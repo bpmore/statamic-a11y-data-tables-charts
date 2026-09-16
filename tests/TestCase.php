@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Tests;
+namespace Bpmore\A11yDataTablesCharts\Tests;
 
-use Bpmore\Furrow\ServiceProvider;
+use Bpmore\A11yDataTablesCharts\ServiceProvider;
 use Statamic\Testing\AddonTestCase;
 use Statamic\Testing\Concerns\FakesViews;
 use Statamic\Testing\Concerns\PreventsSavingStacheItemsToDisk;

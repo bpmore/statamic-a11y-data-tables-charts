@@ -48,7 +48,7 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 
-console.log(`Furrow front-end check, ${new Date().toISOString().slice(0, 10)}`);
+console.log(`A11y Data Tables & Charts front-end check, ${new Date().toISOString().slice(0, 10)}`);
 console.log(`  playwright ${require('playwright/package.json').version}, axe-core ${require('axe-core/package.json').version}\n`);
 
 const browser = await chromium.launch();
@@ -80,7 +80,7 @@ console.log('\n3. Forced colours');
 {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, forcedColors: 'active', colorScheme: 'dark' });
     const page = await context.newPage();
-    for (const [file, selector, prop] of [['grouped-bar.html', '.furrow-pattern__fill', 'fill'], ['grouped-bar.html', '.furrow-pattern__mark', 'stroke'], ['line.html', '.furrow-line', 'stroke'], ['line.html', '.furrow-marker', 'fill']]) {
+    for (const [file, selector, prop] of [['grouped-bar.html', '.a11y-data-pattern__fill', 'fill'], ['grouped-bar.html', '.a11y-data-pattern__mark', 'stroke'], ['line.html', '.a11y-data-line', 'stroke'], ['line.html', '.a11y-data-marker', 'fill']]) {
         await page.goto(`${base}/${file}`);
         const value = await page.evaluate(([s, p]) => getComputedStyle(document.querySelector(s))[p], [selector, prop]);
         // Under forced colours Chromium resolves CanvasText/Canvas to the scheme's colours; what matters is that the author's colour is gone.

@@ -1,7 +1,7 @@
 /**
  * The control panel editors, checked in a real Statamic:
  *
- *   1. A keyboard walkthrough of the furrow_table and furrow_chart
+ *   1. A keyboard walkthrough of the a11y_table and a11y_chart
  *      editors: every Tab stop's role and accessible name, then the grid
  *      worked by keyboard alone: typing, arrow keys, pasting a
  *      spreadsheet, inserting and deleting a row and a column, setting a
@@ -13,9 +13,9 @@
  * fields. Not a CI step: run before a release and paste into
  * docs/conformance.md.
  *
- *   FURROW_CP_URL=https://statamic-dev.test \
- *   FURROW_CP_EMAIL=… FURROW_CP_PASSWORD=… \
- *   FURROW_CP_ENTRY=/cp/collections/reports/entries/<id> \
+ *   A11Y_DATA_CP_URL=https://statamic-dev.test \
+ *   A11Y_DATA_CP_EMAIL=… A11Y_DATA_CP_PASSWORD=… \
+ *   A11Y_DATA_CP_ENTRY=/cp/collections/reports/entries/<id> \
  *   node tests/a11y/cp.mjs
  */
 import { chromium } from 'playwright';
@@ -25,19 +25,19 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const env = (name, fallback) => process.env[name] ?? fallback ?? (() => { throw new Error(`Set ${name}.`); })();
 
-const base = env('FURROW_CP_URL').replace(/\/$/, '');
-const email = env('FURROW_CP_EMAIL');
-const password = env('FURROW_CP_PASSWORD');
-const entry = base + env('FURROW_CP_ENTRY');
-const shots = process.env.FURROW_SHOTS ?? '';
+const base = env('A11Y_DATA_CP_URL').replace(/\/$/, '');
+const email = env('A11Y_DATA_CP_EMAIL');
+const password = env('A11Y_DATA_CP_PASSWORD');
+const entry = base + env('A11Y_DATA_CP_ENTRY');
+const shots = process.env.A11Y_DATA_SHOTS ?? '';
 
-const editors = ['[data-furrow-table]', '[data-furrow-chart]'];
+const editors = ['[data-a11y-data-table]', '[data-a11y-data-chart]'];
 const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa', 'best-practice'];
 let failures = 0;
 const fail = (message) => { failures += 1; console.log(`  ✗ ${message}`); };
 const ok = (message) => console.log(`  ✓ ${message}`);
 
-console.log(`Furrow control panel check, ${new Date().toISOString().slice(0, 10)}`);
+console.log(`A11y Data Tables & Charts control panel check, ${new Date().toISOString().slice(0, 10)}`);
 console.log(`  playwright ${require('playwright/package.json').version}, axe-core ${require('axe-core/package.json').version}`);
 console.log(`  ${entry}\n`);
 
@@ -52,7 +52,7 @@ await page.fill('input[name="email"], input[type="email"]', email);
 await page.fill('input[name="password"], input[type="password"]', password);
 await Promise.all([page.waitForNavigation(), page.click('button[type="submit"]')]);
 await page.goto(entry);
-await page.waitForSelector('[data-furrow-table]', { timeout: 30000 });
+await page.waitForSelector('[data-a11y-data-table]', { timeout: 30000 });
 const snooze = page.getByRole('button', { name: /snooze/i });
 if ((await snooze.count()) > 0) { await snooze.first().click(); await page.waitForTimeout(500); }
 await page.waitForTimeout(1000);
@@ -68,11 +68,11 @@ const describeActive = () => page.evaluate(() => {
         || (el.closest('label')?.textContent.trim())
         || (['BUTTON', 'A', 'SUMMARY'].includes(el.tagName) ? el.textContent.trim() : '');
     const role = el.getAttribute('role') || ({ INPUT: el.type === 'number' ? 'spinbutton' : el.type, TEXTAREA: 'textbox', SELECT: 'combobox (native)', BUTTON: 'button', A: 'link' }[el.tagName] ?? el.tagName.toLowerCase());
-    const within = el.closest('[data-furrow-table]') ? 'furrow_table' : el.closest('[data-furrow-chart]') ? 'furrow_chart' : null;
+    const within = el.closest('[data-a11y-data-table]') ? 'a11y_table' : el.closest('[data-a11y-data-chart]') ? 'a11y_chart' : null;
     return { tag: el.tagName.toLowerCase(), role, name: name || '', id: el.id, within };
 });
 
-const announced = () => page.evaluate(() => [...document.querySelectorAll('[data-furrow-table] [aria-live]')].map((n) => n.textContent.trim()).join(' | '));
+const announced = () => page.evaluate(() => [...document.querySelectorAll('[data-a11y-data-table] [aria-live]')].map((n) => n.textContent.trim()).join(' | '));
 const cellValue = (r, c) => page.evaluate(([r, c]) => document.getElementById(`field_figures-cell-${r}-${c}`)?.value ?? null, [r, c]);
 
 // ------------------------------------------------- 1. keyboard walkthrough
@@ -92,7 +92,7 @@ stops.forEach((s, i) => console.log(`  | ${i + 1} | ${s.within} | ${s.role} | ${
 const unnamed = stops.filter((s) => !s.name);
 if (unnamed.length) fail(`${unnamed.length} focusable element(s) with no accessible name: ${unnamed.map((s) => s.tag + '#' + s.id).join(', ')}`);
 else ok(`every one of the ${stops.length} stops has an accessible name`);
-if (stops.some((s) => s.within === 'furrow_chart')) ok('Tab reaches the chart editor after the table editor');
+if (stops.some((s) => s.within === 'a11y_chart')) ok('Tab reaches the chart editor after the table editor');
 else fail('Tab never reached the chart editor');
 
 console.log('\n  The grid by keyboard');
@@ -114,8 +114,8 @@ if ((await cellValue(2, 2)) === '77') ok('typing replaced the cell value');
 else fail(`typing gave ${await cellValue(2, 2)}`);
 
 // Paste a spreadsheet grid into the last cell and watch the table grow.
-const rowsBefore = await page.locator('[data-furrow-table] tbody tr').count();
-const colsBefore = await page.locator('[data-furrow-table] thead tr:first-child th').count();
+const rowsBefore = await page.locator('[data-a11y-data-table] tbody tr').count();
+const colsBefore = await page.locator('[data-a11y-data-table] thead tr:first-child th').count();
 const originalLast = await cellValue(rowsBefore - 1, colsBefore - 1);
 await page.focus(`#field_figures-cell-${rowsBefore - 1}-${colsBefore - 1}`);
 await page.evaluate(() => {
@@ -125,8 +125,8 @@ await page.evaluate(() => {
     el.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true, cancelable: true }));
 });
 await page.waitForTimeout(300);
-const rowsAfter = await page.locator('[data-furrow-table] tbody tr').count();
-const colsAfter = await page.locator('[data-furrow-table] thead tr:first-child th').count();
+const rowsAfter = await page.locator('[data-a11y-data-table] tbody tr').count();
+const colsAfter = await page.locator('[data-a11y-data-table] thead tr:first-child th').count();
 console.log(`    pasted 2x2 at the last cell: ${rowsBefore}x${colsBefore} → ${rowsAfter}x${colsAfter}; announced: "${await announced()}"`);
 if (rowsAfter === rowsBefore + 1 && colsAfter === colsBefore + 1 && (await cellValue(rowsBefore, colsBefore)) === 'q2') ok('pasting a grid grew the table and filled it');
 else fail('pasting a grid did not grow and fill the table');
@@ -137,17 +137,17 @@ await page.keyboard.press('Enter');
 await page.waitForTimeout(200);
 at = await describeActive();
 console.log(`    Insert a row below row 1: focus moved to "${at.name}"; announced: "${await announced()}"`);
-if ((await page.locator('[data-furrow-table] tbody tr').count()) === rowsAfter + 1 && /Row 2/.test(at.name)) ok('a row was inserted by keyboard and focus moved into it');
+if ((await page.locator('[data-a11y-data-table] tbody tr').count()) === rowsAfter + 1 && /Row 2/.test(at.name)) ok('a row was inserted by keyboard and focus moved into it');
 else fail('inserting a row by keyboard did not behave');
 await page.getByRole('button', { name: 'Delete row 2' }).focus();
 await page.keyboard.press('Enter');
 await page.waitForTimeout(200);
-if ((await page.locator('[data-furrow-table] tbody tr').count()) === rowsAfter) ok('the row was deleted by keyboard');
+if ((await page.locator('[data-a11y-data-table] tbody tr').count()) === rowsAfter) ok('the row was deleted by keyboard');
 else fail('deleting the row by keyboard did not behave');
 await page.getByRole('button', { name: `Delete column ${String.fromCharCode(64 + colsAfter)}` }).focus();
 await page.keyboard.press('Enter');
 await page.waitForTimeout(200);
-if ((await page.locator('[data-furrow-table] thead tr:first-child th').count()) === colsAfter - 1) ok('the pasted column was deleted by keyboard');
+if ((await page.locator('[data-a11y-data-table] thead tr:first-child th').count()) === colsAfter - 1) ok('the pasted column was deleted by keyboard');
 else fail('deleting the column by keyboard did not behave');
 await page.getByRole('button', { name: `Delete row ${rowsAfter}` }).focus();
 await page.keyboard.press('Enter');
@@ -184,12 +184,12 @@ console.log('\n  The chart editor by keyboard');
 await page.getByRole('radio', { name: 'Enter the data here' }).focus();
 await page.keyboard.press('Space');
 await page.waitForTimeout(300);
-if ((await page.locator('[data-furrow-chart] [data-furrow-editor]').count()) === 1) ok('choosing "Enter the data here" showed the grid');
+if ((await page.locator('[data-a11y-data-chart] [data-a11y-data-editor]').count()) === 1) ok('choosing "Enter the data here" showed the grid');
 else fail('choosing "Enter the data here" did not show the grid');
 await page.getByRole('radio', { name: 'Draw a table field on this entry' }).focus();
 await page.keyboard.press('Space');
 await page.waitForTimeout(300);
-const drawing = await page.locator('[data-furrow-chart]').textContent();
+const drawing = await page.locator('[data-a11y-data-chart]').textContent();
 if (/Drawing:/.test(drawing)) ok('the chart editor names the table it draws');
 else fail('the chart editor does not say what it draws');
 if (shots) await page.screenshot({ path: `${shots}/cp-after.png`, fullPage: true });

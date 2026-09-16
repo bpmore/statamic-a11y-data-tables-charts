@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Rules;
+namespace Bpmore\A11yDataTablesCharts\Rules;
 
-use Bpmore\Furrow\Chart\ChartRenderer;
-use Bpmore\Furrow\Chart\Palette;
-use Bpmore\Furrow\Chart\PaletteCheck;
-use Bpmore\Furrow\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
+use Bpmore\A11yDataTablesCharts\Chart\Palette;
+use Bpmore\A11yDataTablesCharts\Chart\PaletteCheck;
+use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
 use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;

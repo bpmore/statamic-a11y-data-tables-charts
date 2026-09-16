@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
 /**
  * What tells one series from another without colour (WCAG 1.4.1): a fill
@@ -20,13 +20,13 @@ final class Shapes
      */
     public const PATTERNS = [
         ['name' => 'solid', 'marks' => ''],
-        ['name' => 'diagonal', 'marks' => '<path class="furrow-pattern__mark" d="M-2 2 L2 -2 M0 8 L8 0 M6 10 L10 6"/>'],
-        ['name' => 'dots', 'marks' => '<circle class="furrow-pattern__mark" cx="4" cy="4" r="1.6"/>'],
-        ['name' => 'horizontal', 'marks' => '<path class="furrow-pattern__mark" d="M0 4 H8"/>'],
-        ['name' => 'vertical', 'marks' => '<path class="furrow-pattern__mark" d="M4 0 V8"/>'],
-        ['name' => 'crosshatch', 'marks' => '<path class="furrow-pattern__mark" d="M0 0 L8 8 M8 0 L0 8"/>'],
-        ['name' => 'reverse-diagonal', 'marks' => '<path class="furrow-pattern__mark" d="M-2 6 L2 10 M0 0 L8 8 M6 -2 L10 2"/>'],
-        ['name' => 'grid', 'marks' => '<path class="furrow-pattern__mark" d="M0 4 H8 M4 0 V8"/>'],
+        ['name' => 'diagonal', 'marks' => '<path class="a11y-data-pattern__mark" d="M-2 2 L2 -2 M0 8 L8 0 M6 10 L10 6"/>'],
+        ['name' => 'dots', 'marks' => '<circle class="a11y-data-pattern__mark" cx="4" cy="4" r="1.6"/>'],
+        ['name' => 'horizontal', 'marks' => '<path class="a11y-data-pattern__mark" d="M0 4 H8"/>'],
+        ['name' => 'vertical', 'marks' => '<path class="a11y-data-pattern__mark" d="M4 0 V8"/>'],
+        ['name' => 'crosshatch', 'marks' => '<path class="a11y-data-pattern__mark" d="M0 0 L8 8 M8 0 L0 8"/>'],
+        ['name' => 'reverse-diagonal', 'marks' => '<path class="a11y-data-pattern__mark" d="M-2 6 L2 10 M0 0 L8 8 M6 -2 L10 2"/>'],
+        ['name' => 'grid', 'marks' => '<path class="a11y-data-pattern__mark" d="M0 4 H8 M4 0 V8"/>'],
     ];
 
     /** @var list<string> */

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 use InvalidArgumentException;
 

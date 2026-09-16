@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Table;
+namespace Bpmore\A11yDataTablesCharts\Table;
 
-use Bpmore\Furrow\Dataset\Dataset;
-use Bpmore\Furrow\Dataset\Grid;
-use Bpmore\Furrow\Dataset\Placed;
-use Bpmore\Furrow\Support\Html;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Dataset\Grid;
+use Bpmore\A11yDataTablesCharts\Dataset\Placed;
+use Bpmore\A11yDataTablesCharts\Support\Html;
 
 /**
  * A dataset as an HTML table with its headers correctly associated.
@@ -36,7 +36,7 @@ final class TableRenderer
     {
         $dataset = Dataset::from($data);
         $grid = Grid::of($dataset);
-        $id = Html::id($options['id'] ?? 'furrow-'.substr(sha1(json_encode($dataset->toArray()) ?: ''), 0, 8));
+        $id = Html::id($options['id'] ?? 'a11y-data-'.substr(sha1(json_encode($dataset->toArray()) ?: ''), 0, 8));
         $complex = $this->isComplex($dataset, $grid);
         $leading = $this->leadingHeaderRows($dataset);
 
@@ -52,7 +52,7 @@ final class TableRenderer
         $thead = $leading > 0 ? '<thead>'.implode('', array_slice($rows, 0, $leading)).'</thead>' : '';
         $tbody = count($rows) > $leading ? '<tbody>'.implode('', array_slice($rows, $leading)).'</tbody>' : '';
 
-        $class = trim('furrow-table '.(string) ($options['class'] ?? ''));
+        $class = trim('a11y-data-table '.(string) ($options['class'] ?? ''));
 
         // The scroll region: overflow-x on the wrapper, and tabindex so a
         // keyboard can reach it when it does overflow. Named by the caption
@@ -63,7 +63,7 @@ final class TableRenderer
             'aria-labelledby' => trim((string) ($options['labelledby'] ?? '').' '.$id.'-caption'),
             'tabindex' => '0',
         ]).'>'
-            .'<table'.Html::attrs(['id' => $id, 'class' => 'furrow-table__table']).'>'
+            .'<table'.Html::attrs(['id' => $id, 'class' => 'a11y-data-table__table']).'>'
             .'<caption'.Html::attrs(['id' => $id.'-caption']).'>'.Html::e($dataset->caption).'</caption>'
             .$thead.$tbody
             .'</table></div>';
@@ -195,7 +195,7 @@ final class TableRenderer
         $header = $this->isHeader($placed, $dataset);
 
         $attributes = [
-            'class' => 'furrow-cell furrow-cell--'.($column?->type ?? 'text'),
+            'class' => 'a11y-data-cell a11y-data-cell--'.($column?->type ?? 'text'),
             'colspan' => $cell->colspan > 1 ? $cell->colspan : null,
             'rowspan' => $cell->rowspan > 1 ? $cell->rowspan : null,
         ];

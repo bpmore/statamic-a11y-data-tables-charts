@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Statamic;
+namespace Bpmore\A11yDataTablesCharts\Statamic;
 
-use Bpmore\Furrow\Chart\Palette;
+use Bpmore\A11yDataTablesCharts\Chart\Palette;
 
 /**
  * Which palette a chart field draws with: the field's own override when it
@@ -39,7 +39,7 @@ final class Palettes
     /** The config file's palette, or the built-in one when the file names none. */
     public static function configured(): Palette
     {
-        $config = config('statamic-furrow.palette');
+        $config = config('statamic-a11y-data-tables-charts.palette');
 
         return is_array($config) ? Palette::fromArray($config) : Palette::default();
     }

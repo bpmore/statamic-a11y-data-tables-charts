@@ -1,5 +1,5 @@
 {
-    "name": "bpmore/statamic-furrow",
+    "name": "bpmore/statamic-a11y-data-tables-charts",
     "description": "Two fieldtypes that make it hard to publish an inaccessible data table or chart: one dataset, rendered as a correctly marked up table and as a server-rendered SVG chart with its data table beside it.",
     "keywords": [
         "statamic",
@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Bpmore\\Furrow\\": "src/"
+            "Bpmore\\A11yDataTablesCharts\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Bpmore\\Furrow\\Tests\\": "tests/"
+            "Bpmore\\A11yDataTablesCharts\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -42,13 +42,13 @@
     },
     "extra": {
         "statamic": {
-            "name": "Furrow",
-            "slug": "statamic-furrow",
+            "name": "A11y Data Tables & Charts",
+            "slug": "statamic-a11y-data-tables-charts",
             "description": "Accessible data tables and charts. One dataset, two renderings, both correct."
         },
         "laravel": {
             "providers": [
-                "Bpmore\\Furrow\\ServiceProvider"
+                "Bpmore\\A11yDataTablesCharts\\ServiceProvider"
             ]
         }
     },

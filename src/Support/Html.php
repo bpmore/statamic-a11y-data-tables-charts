@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Support;
+namespace Bpmore\A11yDataTablesCharts\Support;
 
 /** Escaping and attribute assembly for the two renderers. Pure PHP; no framework helpers. */
 final class Html
@@ -43,7 +43,7 @@ final class Html
         $clean = trim((string) preg_replace('/[^A-Za-z0-9_-]+/', '-', $id), '-');
 
         if ($clean === '' || ! ctype_alpha($clean[0])) {
-            $clean = 'furrow-'.$clean;
+            $clean = 'a11y-data-'.$clean;
         }
 
         return rtrim($clean, '-');

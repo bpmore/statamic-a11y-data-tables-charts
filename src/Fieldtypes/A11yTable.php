@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Fieldtypes;
+namespace Bpmore\A11yDataTablesCharts\Fieldtypes;
 
-use Bpmore\Furrow\Dataset\Dataset;
-use Bpmore\Furrow\Rules\ValidTable;
-use Bpmore\Furrow\Statamic\Normalise;
-use Bpmore\Furrow\Statamic\Rendered;
-use Bpmore\Furrow\Table\TableRenderer;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Rules\ValidTable;
+use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
+use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 use Statamic\Fields\Fieldtype;
 
 /**
@@ -16,23 +16,23 @@ use Statamic\Fields\Fieldtype;
  * renders with its headers correctly associated.
  *
  * Stores the dataset shape the brief fixes and nothing else. The editor
- * is the Vue component registered as `furrow_table-fieldtype`: a grid
+ * is the Vue component registered as `a11y_table-fieldtype`: a grid
  * with a caption input, header toggles, and row and column controls that
  * all work from the keyboard.
  */
-final class FurrowTable extends Fieldtype
+final class A11yTable extends Fieldtype
 {
-    public const HANDLE = 'furrow_table';
+    public const HANDLE = 'a11y_table';
 
     protected static $handle = self::HANDLE;
 
-    protected static $title = 'Furrow table';
+    protected static $title = 'A11y data table';
 
     protected $categories = ['structured'];
 
     protected $icon = 'table';
 
-    protected $keywords = ['furrow', 'table', 'data', 'accessible', 'grid'];
+    protected $keywords = ['a11y', 'accessible', 'table', 'data', 'grid'];
 
     protected $selectableInForms = false;
 
@@ -128,6 +128,6 @@ final class FurrowTable extends Fieldtype
         $parent = $this->field()?->parent();
         $owner = is_object($parent) && method_exists($parent, 'id') ? (string) $parent->id() : '';
 
-        return 'furrow-'.($this->field()?->handle() ?? 'table').($owner !== '' ? '-'.substr(sha1($owner), 0, 6) : '');
+        return 'a11y-data-'.($this->field()?->handle() ?? 'table').($owner !== '' ? '-'.substr(sha1($owner), 0, 6) : '');
     }
 }

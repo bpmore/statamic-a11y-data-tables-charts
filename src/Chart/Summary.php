@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
 /**
  * One sentence about the data for the SVG's <desc>, written from the

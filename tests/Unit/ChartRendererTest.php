@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Chart\ChartRenderer;
-use Bpmore\Furrow\Chart\Palette;
-use Bpmore\Furrow\Chart\PaletteFails;
-use Bpmore\Furrow\Chart\UnknownChartType;
-use Bpmore\Furrow\Dataset\MissingCaption;
+use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
+use Bpmore\A11yDataTablesCharts\Chart\Palette;
+use Bpmore\A11yDataTablesCharts\Chart\PaletteFails;
+use Bpmore\A11yDataTablesCharts\Chart\UnknownChartType;
+use Bpmore\A11yDataTablesCharts\Dataset\MissingCaption;
 
 /** Five series over four categories. */
 function fiveSeries(): array
@@ -49,8 +49,8 @@ it('renders five distinct fill patterns for a five-series grouped bar chart', fu
     // Every series' bars reference that series' pattern: four bars (one per
     // category) and the one legend swatch, and nothing else.
     foreach ($ids as $id) {
-        expect(nodes($x, "//svg//rect[@class='furrow-bar'][contains(@fill, 'url(#$id)')]"))->toHaveCount(4, "pattern $id is not on four bars");
-        expect(nodes($x, "//svg//rect[@class='furrow-legend__swatch'][contains(@fill, 'url(#$id)')]"))->toHaveCount(1, "pattern $id is not in the legend");
+        expect(nodes($x, "//svg//rect[@class='a11y-data-bar'][contains(@fill, 'url(#$id)')]"))->toHaveCount(4, "pattern $id is not on four bars");
+        expect(nodes($x, "//svg//rect[@class='a11y-data-legend__swatch'][contains(@fill, 'url(#$id)')]"))->toHaveCount(1, "pattern $id is not in the legend");
         expect(nodes($x, "//svg//*[contains(@fill, 'url(#$id)')]"))->toHaveCount(5);
     }
 });
@@ -64,14 +64,14 @@ it('renders five distinct dash arrays and marker shapes for a five-series line c
 
     $x = dom($html);
 
-    $lines = nodes($x, "//svg//*[contains(concat(' ', normalize-space(@class), ' '), ' furrow-line ')]");
+    $lines = nodes($x, "//svg//*[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-line ')]");
     expect($lines)->toHaveCount(5);
 
     $dashes = array_map(fn ($l) => trim($l->getAttribute('stroke-dasharray')), $lines);
     expect(array_unique($dashes))->toHaveCount(5, 'two lines share a dash array: '.implode(' | ', $dashes));
 
     // One marker shape per series, four markers per series.
-    $markers = nodes($x, "//svg//*[contains(concat(' ', normalize-space(@class), ' '), ' furrow-marker ')]");
+    $markers = nodes($x, "//svg//*[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-marker ')]");
     expect($markers)->toHaveCount(20);
 
     $shapesBySeries = [];
@@ -207,7 +207,7 @@ it('draws text as text elements, never as paths', function () {
 
     // The only paths are lines and markers, which carry a class saying so.
     foreach (nodes($x, '//svg//path') as $path) {
-        expect($path->getAttribute('class'))->toMatch('/furrow-(line|marker|axis|pattern)/');
+        expect($path->getAttribute('class'))->toMatch('/a11y-data-(line|marker|axis|pattern)/');
     }
 });
 
@@ -257,9 +257,9 @@ it('renders a single-series bar chart with direct value labels', function () {
 
     $x = dom($html);
 
-    expect(nodes($x, "//svg//rect[contains(concat(' ', normalize-space(@class), ' '), ' furrow-bar ')]"))->toHaveCount(2);
-    expect(nodes($x, "//svg//text[@class='furrow-value'][normalize-space(.)='12']"))->toHaveCount(1);
-    expect(nodes($x, "//svg//text[@class='furrow-value'][normalize-space(.)='15']"))->toHaveCount(1);
+    expect(nodes($x, "//svg//rect[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-bar ')]"))->toHaveCount(2);
+    expect(nodes($x, "//svg//text[@class='a11y-data-value'][normalize-space(.)='12']"))->toHaveCount(1);
+    expect(nodes($x, "//svg//text[@class='a11y-data-value'][normalize-space(.)='15']"))->toHaveCount(1);
 });
 
 it('copes with an empty dataset by rendering the table and an empty plot', function () {
@@ -282,6 +282,6 @@ it('cycles patterns and markers when there are more series than shapes', functio
 
     $x = dom($html);
 
-    expect(nodes($x, "//svg//rect[contains(concat(' ', normalize-space(@class), ' '), ' furrow-bar ')]"))->toHaveCount(12);
+    expect(nodes($x, "//svg//rect[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-bar ')]"))->toHaveCount(12);
     expect(nodes($x, '//svg//defs//pattern'))->toHaveCount(12);
 });

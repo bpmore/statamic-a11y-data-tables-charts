@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Dataset\MissingCaption;
-use Bpmore\Furrow\Table\TableRenderer;
+use Bpmore\A11yDataTablesCharts\Dataset\MissingCaption;
+use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 
 /**
  * Discriminating test 1: complex header pairing.
@@ -160,8 +160,8 @@ it('aligns by column type through a class and never a style attribute', function
     $x = dom($html);
 
     expect(nodes($x, '//*[@style]'))->toHaveCount(0);
-    expect(nodes($x, "//tbody//td[contains(concat(' ', normalize-space(@class), ' '), ' furrow-cell--number ')]"))->toHaveCount(1);
-    expect(nodes($x, "//tbody//td[contains(concat(' ', normalize-space(@class), ' '), ' furrow-cell--text ')]"))->toHaveCount(1);
+    expect(nodes($x, "//tbody//td[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-cell--number ')]"))->toHaveCount(1);
+    expect(nodes($x, "//tbody//td[contains(concat(' ', normalize-space(@class), ' '), ' a11y-data-cell--text ')]"))->toHaveCount(1);
 });
 
 it('puts abbr on a header cell that has one', function () {

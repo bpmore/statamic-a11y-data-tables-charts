@@ -1,5 +1,5 @@
 /*
- * Furrow: the table and the chart on the front end.
+ * A11y Data Tables & Charts: the table and the chart on the front end.
  *
  * Nothing here is required for the markup to be correct. It makes the
  * scroll region scroll, aligns numbers by column type, lets the chart
@@ -8,58 +8,58 @@
  * prefers-reduced-motion to switch off.
  */
 
-.furrow-table {
+.a11y-data-table {
     overflow-x: auto;
     max-width: 100%;
 }
 
 /* The region is a focus stop, so it needs a visible focus ring. */
-.furrow-table:focus-visible {
+.a11y-data-table:focus-visible {
     outline: 3px solid currentColor;
     outline-offset: 2px;
 }
 
-.furrow-table__table {
+.a11y-data-table__table {
     border-collapse: collapse;
     width: 100%;
 }
 
-.furrow-table__table caption {
+.a11y-data-table__table caption {
     text-align: left;
     font-weight: 600;
     padding: 0.5em 0;
     caption-side: top;
 }
 
-.furrow-table__table th,
-.furrow-table__table td {
+.a11y-data-table__table th,
+.a11y-data-table__table td {
     border: 1px solid currentColor;
     padding: 0.4em 0.6em;
     vertical-align: top;
 }
 
-.furrow-table__table th {
+.a11y-data-table__table th {
     font-weight: 600;
     text-align: left;
 }
 
-.furrow-cell--number {
+.a11y-data-cell--number {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
 
-.furrow-cell--text {
+.a11y-data-cell--text {
     text-align: left;
 }
 
 /* The chart. */
 
-.furrow-chart {
+.a11y-data-chart {
     margin: 1.5em 0;
     max-width: 100%;
 }
 
-.furrow-chart__svg {
+.a11y-data-chart__svg {
     display: block;
     width: 100%;
     height: auto;
@@ -67,32 +67,32 @@
     font-family: inherit;
 }
 
-.furrow-chart__data {
+.a11y-data-chart__data {
     margin-top: 1em;
 }
 
-.furrow-chart__data > summary {
+.a11y-data-chart__data > summary {
     cursor: pointer;
     font-weight: 600;
     padding: 0.25em 0;
 }
 
-.furrow-chart__data > summary:focus-visible {
+.a11y-data-chart__data > summary:focus-visible {
     outline: 3px solid currentColor;
     outline-offset: 2px;
 }
 
 /* Print: no scroll region, and the chart on the page whole. */
 @media print {
-    .furrow-table {
+    .a11y-data-table {
         overflow: visible;
     }
 
-    .furrow-chart {
+    .a11y-data-chart {
         break-inside: avoid;
     }
 
-    .furrow-chart__svg {
+    .a11y-data-chart__svg {
         max-height: 60vh;
     }
 }

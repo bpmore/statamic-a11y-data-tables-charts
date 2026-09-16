@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
 /**
  * The value axis: a range that always includes zero, rounded out to a tick

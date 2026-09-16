@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
 /** What PaletteCheck found: nothing, or which colours fall short and by how much. */
 final class PaletteResult

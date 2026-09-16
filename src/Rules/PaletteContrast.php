@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Rules;
+namespace Bpmore\A11yDataTablesCharts\Rules;
 
-use Bpmore\Furrow\Chart\Palette;
-use Bpmore\Furrow\Chart\PaletteCheck;
-use Bpmore\Furrow\Statamic\Palettes;
+use Bpmore\A11yDataTablesCharts\Chart\Palette;
+use Bpmore\A11yDataTablesCharts\Chart\PaletteCheck;
+use Bpmore\A11yDataTablesCharts\Statamic\Palettes;
 use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;

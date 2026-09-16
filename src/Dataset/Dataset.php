@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 /**
  * The one shape both renderers read: a caption, what is true of each

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Tests\TestCase;
+use Bpmore\A11yDataTablesCharts\Tests\TestCase;
 
 uses(TestCase::class)->in('Feature');
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Statamic;
+namespace Bpmore\A11yDataTablesCharts\Statamic;
 
 use Statamic\Fields\ArrayableString;
 

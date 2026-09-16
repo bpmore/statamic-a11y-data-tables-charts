@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Rules;
+namespace Bpmore\A11yDataTablesCharts\Rules;
 
-use Bpmore\Furrow\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 

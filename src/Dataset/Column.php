@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 /** What is true of a whole column: its name, what kind of value it holds, and whether it names the rows. */
 final class Column

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Fieldtypes;
+namespace Bpmore\A11yDataTablesCharts\Fieldtypes;
 
-use Bpmore\Furrow\Chart\ChartRenderer;
-use Bpmore\Furrow\Dataset\Dataset;
-use Bpmore\Furrow\Rules\ValidChart;
-use Bpmore\Furrow\Statamic\Normalise;
-use Bpmore\Furrow\Statamic\Palettes;
-use Bpmore\Furrow\Statamic\Rendered;
-use Bpmore\Furrow\Support\Html;
+use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Rules\ValidChart;
+use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Palettes;
+use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
+use Bpmore\A11yDataTablesCharts\Support\Html;
 use InvalidArgumentException;
 use Statamic\Fields\Fieldtype;
 
@@ -19,26 +19,26 @@ use Statamic\Fields\Fieldtype;
  *
  * Referencing a table field is the default, because one dataset with two
  * renderings cannot drift. The editor is the Vue component registered as
- * `furrow_chart-fieldtype`; it lists the table fields on the same form.
+ * `a11y_chart-fieldtype`; it lists the table fields on the same form.
  *
  * The chart is rendered at augmentation, from the table's value at that
  * moment, so it follows the table. When the table is gone, or the palette
  * cannot be used, what renders is a visible notice, never an exception
  * and never a silent blank.
  */
-final class FurrowChart extends Fieldtype
+final class A11yChart extends Fieldtype
 {
-    public const HANDLE = 'furrow_chart';
+    public const HANDLE = 'a11y_chart';
 
     protected static $handle = self::HANDLE;
 
-    protected static $title = 'Furrow chart';
+    protected static $title = 'A11y data chart';
 
     protected $categories = ['structured', 'media'];
 
     protected $icon = 'chart';
 
-    protected $keywords = ['furrow', 'chart', 'graph', 'bar', 'line', 'svg', 'accessible'];
+    protected $keywords = ['a11y', 'accessible', 'chart', 'graph', 'bar', 'line', 'svg', 'accessible'];
 
     protected $selectableInForms = false;
 
@@ -63,7 +63,7 @@ final class FurrowChart extends Fieldtype
             ],
             [
                 'display' => __('Palette'),
-                'instructions' => __('Leave blank to use the site palette from config/statamic-furrow.php. Every series colour must reach 3:1 against the background (WCAG 1.4.11); a palette that does not will not save.'),
+                'instructions' => __('Leave blank to use the site palette from config/statamic-a11y-data-tables-charts.php. Every series colour must reach 3:1 against the background (WCAG 1.4.11); a palette that does not will not save.'),
                 'fields' => [
                     'palette_background' => [
                         'display' => __('Background'),
@@ -77,7 +77,7 @@ final class FurrowChart extends Fieldtype
                         'instructions' => __('One hex colour per series, in order. Series are also told apart by pattern, dash and marker, so colour is never the only difference.'),
                         'type' => 'list',
                         'width' => 50,
-                        'validate' => ['nullable', 'new \\Bpmore\\Furrow\\Rules\\PaletteContrast'],
+                        'validate' => ['nullable', 'new \\Bpmore\\A11yDataTablesCharts\\Rules\\PaletteContrast'],
                     ],
                 ],
             ],
@@ -127,7 +127,7 @@ final class FurrowChart extends Fieldtype
     {
         return [
             'types' => ChartRenderer::TYPES,
-            'tableFieldtype' => FurrowTable::HANDLE,
+            'tableFieldtype' => A11yTable::HANDLE,
         ];
     }
 
@@ -159,7 +159,7 @@ final class FurrowChart extends Fieldtype
                 'id' => $id,
                 'palette' => Palettes::for((array) $this->field()?->config()),
                 'summary' => $chart['summary'],
-                'table' => $this->config('data_table') ?: config('statamic-furrow.data_table', 'open'),
+                'table' => $this->config('data_table') ?: config('statamic-a11y-data-tables-charts.data_table', 'open'),
             ]);
         } catch (InvalidArgumentException $e) {
             // A missing caption, a palette that fails, a type that is not
@@ -196,7 +196,7 @@ final class FurrowChart extends Fieldtype
     /** @param  array<string, mixed>  $chart */
     private function notice(string $id, array $chart, string $message): Rendered
     {
-        $html = '<p'.Html::attrs(['class' => 'furrow-chart furrow-chart--missing', 'id' => $id]).'>'.Html::e($message).'</p>';
+        $html = '<p'.Html::attrs(['class' => 'a11y-data-chart a11y-data-chart--missing', 'id' => $id]).'>'.Html::e($message).'</p>';
 
         return Rendered::make($html, ['type' => $chart['type'], 'source' => $chart['source'], 'table' => $chart['table'], 'summary' => $chart['summary'], 'missing' => true]);
     }
@@ -206,6 +206,6 @@ final class FurrowChart extends Fieldtype
         $parent = $this->field()?->parent();
         $owner = is_object($parent) && method_exists($parent, 'id') ? (string) $parent->id() : '';
 
-        return 'furrow-'.($this->field()?->handle() ?? 'chart').($owner !== '' ? '-'.substr(sha1($owner), 0, 6) : '');
+        return 'a11y-data-'.($this->field()?->handle() ?? 'chart').($owner !== '' ? '-'.substr(sha1($owner), 0, 6) : '');
     }
 }

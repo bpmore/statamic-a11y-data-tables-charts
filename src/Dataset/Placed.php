@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Dataset;
+namespace Bpmore\A11yDataTablesCharts\Dataset;
 
 /** A cell at its place in the grid: which row and column it starts in, and how far it reaches. */
 final class Placed

@@ -1,6 +1,6 @@
 <script setup>
 /**
- * The furrow_table editor: the shared grid, bound to this field's value.
+ * The a11y_table editor: the shared grid, bound to this field's value.
  * A field with nothing in it yet starts as a small blank table shaped by
  * the blueprint's "start with a header row / column" settings.
  */
@@ -30,7 +30,7 @@ function onUpdate(next) {
 </script>
 
 <template>
-    <div :data-furrow-table="base">
+    <div :data-a11y-data-table="base">
         <TableEditor :model-value="value" :id-base="base" :read-only="isReadOnly" @update:model-value="onUpdate" />
     </div>
 </template>

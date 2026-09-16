@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bpmore\Furrow\Chart;
+namespace Bpmore\A11yDataTablesCharts\Chart;
 
-use Bpmore\Furrow\Dataset\Dataset;
-use Bpmore\Furrow\Dataset\Grid;
+use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
+use Bpmore\A11yDataTablesCharts\Dataset\Grid;
 
 /**
  * The dataset read as categories and series. The column that names the

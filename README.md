@@ -1,7 +1,7 @@
-# Furrow for Statamic
+# A11y Data Tables & Charts for Statamic
 
 Two fieldtypes that make it hard to publish an inaccessible data table or
-chart: `furrow_table` and `furrow_chart`. One dataset, two renderings, both
+chart: `a11y_table` and `a11y_chart`. One dataset, two renderings, both
 correct.
 
 A table cannot be saved without a caption. A complex table gets `id` and
@@ -23,19 +23,19 @@ reader verification with NVDA and VoiceOver on a released build.
 ## Install
 
 ```
-composer require bpmore/statamic-furrow
+composer require bpmore/statamic-a11y-data-tables-charts
 ```
 
 Nothing else to run. The control panel assets are built and shipped with the
 package. The optional config file is published with:
 
 ```
-php please vendor:publish --tag=statamic-furrow-config
+php please vendor:publish --tag=statamic-a11y-data-tables-charts-config
 ```
 
 ## The fields
 
-Add a **Furrow table** field to a blueprint. Authors get a caption input, a
+Add a **A11y data table** field to a blueprint. Authors get a caption input, a
 grid of cells with a header row of column letters and a header column of row
 numbers, per-column settings (text or number, and whether the column holds row
 headers), per-row settings (header row, insert, delete), and cell options for
@@ -43,8 +43,8 @@ spans and abbreviations. Pasting rows from a spreadsheet into a cell fills the
 grid from there and grows it to fit. Everything works from the keyboard: arrow
 keys move between cells, and every button has a name.
 
-Add a **Furrow chart** field to the same blueprint. Authors choose bar, grouped
-bar or line, then either pick a Furrow table field on the entry to draw (the
+Add a **A11y data chart** field to the same blueprint. Authors choose bar, grouped
+bar or line, then either pick a A11y data table field on the entry to draw (the
 default, so one set of numbers is shown twice and cannot drift) or enter data
 in the same grid. An optional summary sentence becomes the picture's
 description; left blank, the chart writes one from the numbers.
@@ -58,15 +58,15 @@ is marked).
 A field renders itself when printed:
 
 ```
-{{ furrow:styles }}
+{{ a11y_data:styles }}
 
 {{ figures }}
 {{ picture }}
 ```
 
-`{{ furrow:styles }}` inlines the addon's stylesheet: the scroll region, the
+`{{ a11y_data:styles }}` inlines the addon's stylesheet: the scroll region, the
 number alignment, the chart scaling, print. Put it in the layout once. The same
-file is published to `public/vendor/statamic-furrow/css/furrow.css` if you
+file is published to `public/vendor/statamic-a11y-data-tables-charts/css/a11y-data.css` if you
 would rather link it.
 
 The parts are there by path: `{{ figures:caption }}`, `{{ figures:rows }}`,
@@ -77,10 +77,10 @@ The tags do the same thing explicitly, and also take a dataset built in the
 template:
 
 ```
-{{ furrow:table field="figures" }}
-{{ furrow:chart field="picture" }}
-{{ furrow:chart :data="my_dataset" type="line" summary="Up and to the right." }}
-{{ furrow:chart :data="figures" type="line" caption="The same figures, as lines" }}
+{{ a11y_data:table field="figures" }}
+{{ a11y_data:chart field="picture" }}
+{{ a11y_data:chart :data="my_dataset" type="line" summary="Up and to the right." }}
+{{ a11y_data:chart :data="figures" type="line" caption="The same figures, as lines" }}
 ```
 
 `:data` takes an array a template built, or a table field's own value, so one
@@ -97,7 +97,7 @@ Column headers are `<th scope="col">`, row headers `<th scope="row">`, and an
 empty corner is a `<td>`. When there is more than one header row, more than one
 header column, or any header that spans, every header gets an `id` and every
 cell a `headers` attribute naming exactly the headers that apply to it.
-Alignment comes from `furrow-cell--number` and `furrow-cell--text`, never a
+Alignment comes from `a11y-data-cell--number` and `a11y-data-cell--text`, never a
 `style` attribute. No ARIA role is put on the table.
 
 **Chart.** A `<figure>` holding an inline `<svg role="img">` named by its
@@ -111,7 +111,7 @@ become system colours and the patterns still tell the series apart.
 
 ## Config
 
-`config/statamic-furrow.php` has two settings.
+`config/statamic-a11y-data-tables-charts.php` has two settings.
 
 **`palette`**: the background the chart sits on and one colour per series.
 Every series colour must reach 3:1 against the background (WCAG 1.4.11). A
@@ -131,7 +131,7 @@ browsers, so a site that prints its pages should leave this open.
 
 If the table field a chart names is removed from the entry, or its palette
 cannot be read, the page shows a paragraph saying so in the chart's place,
-with the class `furrow-chart--missing`. Nothing is thrown and nothing is
+with the class `a11y-data-chart--missing`. Nothing is thrown and nothing is
 silently blank. `{{ picture:missing }}` is true in that case.
 
 ## What the addon does not do

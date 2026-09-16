@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Bpmore\Furrow\Fieldtypes\FurrowChart;
-use Bpmore\Furrow\Fieldtypes\FurrowTable;
-use Bpmore\Furrow\Statamic\Rendered;
+use Bpmore\A11yDataTablesCharts\Fieldtypes\A11yChart;
+use Bpmore\A11yDataTablesCharts\Fieldtypes\A11yTable;
+use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
 use Statamic\Facades\Blueprint;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
@@ -22,8 +22,8 @@ function makeCollection(array $chartConfig = []): void
     Blueprint::make('report')->setNamespace('collections.reports')->setContents([
         'tabs' => ['main' => ['sections' => [['fields' => [
             ['handle' => 'title', 'field' => ['type' => 'text']],
-            ['handle' => 'figures', 'field' => ['type' => 'furrow_table', 'display' => 'Figures']],
-            ['handle' => 'picture', 'field' => ['type' => 'furrow_chart', 'display' => 'Picture'] + $chartConfig],
+            ['handle' => 'figures', 'field' => ['type' => 'a11y_table', 'display' => 'Figures']],
+            ['handle' => 'picture', 'field' => ['type' => 'a11y_chart', 'display' => 'Picture'] + $chartConfig],
         ]]]]],
     ])->save();
 }
@@ -48,8 +48,8 @@ function validationErrors(array $values): array
 }
 
 it('registers both fieldtypes under their handles', function () {
-    expect(app(FieldtypeRepository::class)->find('furrow_table'))->toBeInstanceOf(FurrowTable::class);
-    expect(app(FieldtypeRepository::class)->find('furrow_chart'))->toBeInstanceOf(FurrowChart::class);
+    expect(app(FieldtypeRepository::class)->find('a11y_table'))->toBeInstanceOf(A11yTable::class);
+    expect(app(FieldtypeRepository::class)->find('a11y_chart'))->toBeInstanceOf(A11yChart::class);
 });
 
 it('refuses a table without a caption and there is no setting that allows one', function () {
@@ -65,7 +65,7 @@ it('refuses a table without a caption and there is no setting that allows one', 
     expect(validationErrors(['title' => 'x', 'figures' => figures()]))->not->toHaveKey('figures');
 
     // The fieldtype has no config field that could loosen this.
-    $config = collect((new FurrowTable)->configFields()->all())->keys()->all();
+    $config = collect((new A11yTable)->configFields()->all())->keys()->all();
     expect($config)->not->toContain('require_caption');
     foreach ($config as $handle) {
         expect($handle)->not->toContain('caption');
@@ -90,7 +90,7 @@ it('refuses a chart whose table field is not being saved with a caption', functi
 
 it('refuses to save a chart when the site palette fails contrast', function () {
     makeCollection();
-    config()->set('statamic-furrow.palette', ['background' => '#ffffff', 'series' => ['#03a8b1']]);
+    config()->set('statamic-a11y-data-tables-charts.palette', ['background' => '#ffffff', 'series' => ['#03a8b1']]);
 
     $errors = validationErrors(['title' => 'x', 'figures' => figures(), 'picture' => ['type' => 'bar', 'source' => 'field', 'table' => 'figures']]);
 
@@ -183,26 +183,26 @@ it('renders through Antlers as a string, as a pair, and through the tag', functi
     // parse could not show the tag working.
     $this->withFakeViews();
     $this->viewShouldReturnRaw('layout', '{{ template_content }}');
-    $this->viewShouldReturnRaw('report', '{{ figures }}|{{ figures:caption }}|{{ picture }}|{{ furrow:chart field="picture" }}|{{ furrow:table field="figures" }}|{{ furrow:styles }}|{{ furrow:chart :data="figures" type="bar" caption="The same apples, as bars" }}');
+    $this->viewShouldReturnRaw('report', '{{ figures }}|{{ figures:caption }}|{{ picture }}|{{ a11y_data:chart field="picture" }}|{{ a11y_data:table field="figures" }}|{{ a11y_data:styles }}|{{ a11y_data:chart :data="figures" type="bar" caption="The same apples, as bars" }}');
 
     $html = $this->get('/reports/four')->assertOk()->getContent();
 
     [$table, $caption, $chart, $tagChart, $tagTable, $styles, $again] = explode('|', $html);
 
     // A table field drawn again by the tag, as another type with its own caption.
-    expect($again)->toContain('furrow-chart--bar');
-    expect($again)->toContain('<title id="furrow-chart-');
+    expect($again)->toContain('a11y-data-chart--bar');
+    expect($again)->toContain('<title id="a11y-data-chart-');
     expect($again)->toContain('The same apples, as bars');
     expect($again)->toContain('>15<');
 
     expect($table)->toContain('<table');
     expect($caption)->toBe('Apples per year');
     expect($chart)->toContain('<svg');
-    expect($chart)->toContain('furrow-chart--line');
+    expect($chart)->toContain('a11y-data-chart--line');
     expect($tagChart)->toBe($chart);
     expect($tagTable)->toBe($table);
     expect(trim($styles))->toStartWith('<style>');
-    expect($styles)->toContain('.furrow-table');
+    expect($styles)->toContain('.a11y-data-table');
 });
 
 it('uses a field palette override and refuses the entry when it fails', function () {
@@ -227,7 +227,7 @@ it('refuses a field palette override that fails contrast when the blueprint fiel
     $this->actingAs(\Statamic\Facades\User::make()->makeSuper()->save());
 
     $post = fn (array $values) => $this->postJson(cp_route('fields.update'), [
-        'type' => 'furrow_chart',
+        'type' => 'a11y_chart',
         'values' => ['handle' => 'picture', 'display' => 'Picture'] + $values,
         'fields' => [],
     ]);
@@ -248,7 +248,7 @@ it('refuses a field palette override that fails contrast when the blueprint fiel
 });
 
 it('stores nothing for an empty table and an unset chart', function () {
-    expect((new FurrowTable)->process(['caption' => '', 'columns' => [], 'rows' => [['header' => true, 'cells' => [['value' => '']]]]]))->toBeNull();
-    expect((new FurrowChart)->process(['type' => 'bar', 'source' => 'field', 'table' => '']))->toBeNull();
-    expect((new FurrowChart)->process(['type' => 'bar', 'source' => 'inline', 'data' => ['caption' => '', 'rows' => []]]))->toBeNull();
+    expect((new A11yTable)->process(['caption' => '', 'columns' => [], 'rows' => [['header' => true, 'cells' => [['value' => '']]]]]))->toBeNull();
+    expect((new A11yChart)->process(['type' => 'bar', 'source' => 'field', 'table' => '']))->toBeNull();
+    expect((new A11yChart)->process(['type' => 'bar', 'source' => 'inline', 'data' => ['caption' => '', 'rows' => []]]))->toBeNull();
 });

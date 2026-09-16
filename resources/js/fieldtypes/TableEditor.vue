@@ -179,7 +179,7 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
 </script>
 
 <template>
-    <div class="furrow-editor space-y-4" :data-furrow-editor="idBase">
+    <div class="a11y-data-editor space-y-4" :data-a11y-data-editor="idBase">
         <Field
             :id="id('caption')"
             :label="__('Caption')"
@@ -190,8 +190,8 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
             <Input :id="id('caption')" v-model="caption" :read-only="readOnly" autocomplete="off" />
         </Field>
 
-        <div class="furrow-editor__scroll">
-            <table class="furrow-editor__grid" :aria-describedby="id('help')">
+        <div class="a11y-data-editor__scroll">
+            <table class="a11y-data-editor__grid" :aria-describedby="id('help')">
                 <caption class="sr-only">{{ __('Table cells') }}</caption>
                 <thead>
                     <tr>
@@ -199,14 +199,14 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
                         <th v-for="c in columnIndexes" :key="'h' + c" scope="col" :id="id('col-' + c)">{{ __('Column') }} {{ letter(c) }}</th>
                         <td></td>
                     </tr>
-                    <tr class="furrow-editor__settings">
+                    <tr class="a11y-data-editor__settings">
                         <th scope="row" :id="id('colsettings')">{{ __('Column settings') }}</th>
                         <td v-for="c in columnIndexes" :key="'s' + c">
-                            <div class="furrow-editor__stack">
+                            <div class="a11y-data-editor__stack">
                                 <label :for="id('type-' + c)" class="sr-only">{{ __('Type of column') }} {{ letter(c) }}</label>
                                 <select
                                     :id="id('type-' + c)"
-                                    class="furrow-editor__select"
+                                    class="a11y-data-editor__select"
                                     :value="table.columns[c]?.type ?? 'text'"
                                     :disabled="readOnly"
                                     @change="setColumn(c, { type: $event.target.value })"
@@ -214,11 +214,11 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
                                     <option value="text">{{ __('Text') }}</option>
                                     <option value="number">{{ __('Number') }}</option>
                                 </select>
-                                <label class="furrow-editor__check">
+                                <label class="a11y-data-editor__check">
                                     <input type="checkbox" :checked="!!table.columns[c]?.header" :disabled="readOnly" @change="setColumn(c, { header: $event.target.checked })" />
                                     <span>{{ __('Row headers') }}</span>
                                 </label>
-                                <span v-if="!readOnly" class="furrow-editor__actions">
+                                <span v-if="!readOnly" class="a11y-data-editor__actions">
                                     <Button size="xs" variant="default" :text="__('Insert after')" :aria-label="__('Insert a column after column') + ' ' + letter(c)" @click="insertColumn(c)" />
                                     <Button size="xs" variant="default" :text="__('Delete')" :aria-label="__('Delete column') + ' ' + letter(c)" @click="deleteColumn(c)" />
                                 </span>
@@ -228,19 +228,19 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row, r) in table.rows" :key="'r' + r" :class="{ 'furrow-editor__header-row': row.header }">
+                    <tr v-for="(row, r) in table.rows" :key="'r' + r" :class="{ 'a11y-data-editor__header-row': row.header }">
                         <th scope="row" :id="id('row-' + r)">{{ __('Row') }} {{ r + 1 }}</th>
                         <td
                             v-for="{ slot, c } in originSlots(r)"
                             :key="'c' + r + '-' + c"
                             :colspan="row.cells[slot.i].colspan > 1 ? row.cells[slot.i].colspan : null"
                             :rowspan="row.cells[slot.i].rowspan > 1 ? row.cells[slot.i].rowspan : null"
-                            :class="{ 'furrow-editor__header-cell': row.header || table.columns[c]?.header }"
+                            :class="{ 'a11y-data-editor__header-cell': row.header || table.columns[c]?.header }"
                         >
                             <input
                                 :id="cellInput(r, c)"
                                 type="text"
-                                class="furrow-editor__cell"
+                                class="a11y-data-editor__cell"
                                 :value="row.cells[slot.i].value"
                                 :aria-labelledby="id('col-' + c) + ' ' + id('row-' + r)"
                                 :readonly="readOnly"
@@ -251,13 +251,13 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
                                 @paste="onPaste(r, c, $event)"
                             />
                         </td>
-                        <td class="furrow-editor__rowsettings">
-                            <div class="furrow-editor__row">
-                                <label class="furrow-editor__check">
+                        <td class="a11y-data-editor__rowsettings">
+                            <div class="a11y-data-editor__row">
+                                <label class="a11y-data-editor__check">
                                     <input type="checkbox" :checked="row.header" :disabled="readOnly" @change="setRowHeader(r, $event)" />
                                     <span>{{ __('Header row') }}</span>
                                 </label>
-                                <span v-if="!readOnly" class="furrow-editor__actions">
+                                <span v-if="!readOnly" class="a11y-data-editor__actions">
                                     <Button size="xs" variant="default" :text="__('Insert below')" :aria-label="__('Insert a row below row') + ' ' + (r + 1)" @click="insertRow(r)" />
                                     <Button size="xs" variant="default" :text="__('Delete')" :aria-label="__('Delete row') + ' ' + (r + 1)" @click="deleteRow(r)" />
                                 </span>
@@ -268,29 +268,29 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
             </table>
         </div>
 
-        <p :id="id('help')" class="furrow-editor__help">
+        <p :id="id('help')" class="a11y-data-editor__help">
             {{ __('Type in a cell, or paste rows from a spreadsheet into one and the table grows to fit. Arrow keys move between cells. A header row names the columns; a row headers column names the rows.') }}
         </p>
 
-        <fieldset v-if="activeCell && !readOnly" class="furrow-editor__options">
+        <fieldset v-if="activeCell && !readOnly" class="a11y-data-editor__options">
             <legend>{{ __('Cell options') }}: {{ __('Column') }} {{ letter(active.c) }}, {{ __('Row') }} {{ active.r + 1 }}</legend>
-            <div class="furrow-editor__options-grid">
+            <div class="a11y-data-editor__options-grid">
                 <div>
                     <label :for="id('colspan')">{{ __('Columns spanned') }}</label>
-                    <input :id="id('colspan')" type="number" min="1" :max="width - active.c" class="furrow-editor__cell" :value="activeCell.colspan || 1" @change="setActiveOption('colspan', $event.target.value)" />
+                    <input :id="id('colspan')" type="number" min="1" :max="width - active.c" class="a11y-data-editor__cell" :value="activeCell.colspan || 1" @change="setActiveOption('colspan', $event.target.value)" />
                 </div>
                 <div>
                     <label :for="id('rowspan')">{{ __('Rows spanned') }}</label>
-                    <input :id="id('rowspan')" type="number" min="1" :max="table.rows.length - active.r" class="furrow-editor__cell" :value="activeCell.rowspan || 1" @change="setActiveOption('rowspan', $event.target.value)" />
+                    <input :id="id('rowspan')" type="number" min="1" :max="table.rows.length - active.r" class="a11y-data-editor__cell" :value="activeCell.rowspan || 1" @change="setActiveOption('rowspan', $event.target.value)" />
                 </div>
                 <div v-if="table.rows[active.r].header || table.columns[active.c]?.header">
                     <label :for="id('abbr')">{{ __('Short form for screen readers') }}</label>
-                    <input :id="id('abbr')" type="text" class="furrow-editor__cell" :value="activeCell.abbr || ''" @change="setActiveOption('abbr', $event.target.value)" />
+                    <input :id="id('abbr')" type="text" class="a11y-data-editor__cell" :value="activeCell.abbr || ''" @change="setActiveOption('abbr', $event.target.value)" />
                 </div>
             </div>
         </fieldset>
 
-        <div v-if="!readOnly" class="furrow-editor__toolbar">
+        <div v-if="!readOnly" class="a11y-data-editor__toolbar">
             <Button size="sm" :text="__('Add row')" @click="insertRow(table.rows.length - 1)" />
             <Button size="sm" :text="__('Add column')" @click="insertColumn(width - 1)" />
         </div>
@@ -300,34 +300,34 @@ const columnIndexes = computed(() => Array.from({ length: width.value }, (_, c) 
 </template>
 
 <style>
-.furrow-editor__scroll {
+.a11y-data-editor__scroll {
     overflow-x: auto;
     max-width: 100%;
 }
-.furrow-editor__grid {
+.a11y-data-editor__grid {
     border-collapse: collapse;
     min-width: 100%;
     font-size: 0.875rem;
 }
-.furrow-editor__grid th,
-.furrow-editor__grid td {
+.a11y-data-editor__grid th,
+.a11y-data-editor__grid td {
     border: 1px solid var(--color-gray-300, #d1d5db);
     padding: 0.25rem;
     vertical-align: top;
     text-align: left;
 }
-.furrow-editor__grid thead th,
-.furrow-editor__grid tbody th {
+.a11y-data-editor__grid thead th,
+.a11y-data-editor__grid tbody th {
     background: var(--color-gray-100, #f3f4f6);
     font-weight: 500;
     white-space: nowrap;
 }
-.furrow-editor__header-row td.furrow-editor__header-cell,
-td.furrow-editor__header-cell {
+.a11y-data-editor__header-row td.a11y-data-editor__header-cell,
+td.a11y-data-editor__header-cell {
     background: var(--color-gray-50, #f9fafb);
 }
-.furrow-editor__cell,
-.furrow-editor__select {
+.a11y-data-editor__cell,
+.a11y-data-editor__select {
     width: 100%;
     min-width: 6rem;
     padding: 0.375rem 0.5rem;
@@ -337,74 +337,74 @@ td.furrow-editor__header-cell {
     color: inherit;
     font: inherit;
 }
-.furrow-editor__header-cell .furrow-editor__cell {
+.a11y-data-editor__header-cell .a11y-data-editor__cell {
     font-weight: 600;
 }
-.furrow-editor__cell:focus-visible,
-.furrow-editor__select:focus-visible,
-.furrow-editor__check input:focus-visible {
+.a11y-data-editor__cell:focus-visible,
+.a11y-data-editor__select:focus-visible,
+.a11y-data-editor__check input:focus-visible {
     outline: 2px solid var(--color-blue-500, #2563eb);
     outline-offset: 1px;
 }
-.furrow-editor__stack {
+.a11y-data-editor__stack {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
     min-width: 8rem;
 }
-.furrow-editor__check {
+.a11y-data-editor__check {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
     white-space: nowrap;
 }
-.furrow-editor__actions {
+.a11y-data-editor__actions {
     display: inline-flex;
     gap: 0.25rem;
     flex-wrap: wrap;
 }
-.furrow-editor__rowsettings {
+.a11y-data-editor__rowsettings {
     white-space: nowrap;
 }
-.furrow-editor__row {
+.a11y-data-editor__row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
-.furrow-editor__help {
+.a11y-data-editor__help {
     font-size: 0.8125rem;
     color: var(--color-gray-600, #4b5563);
 }
-.furrow-editor__options {
+.a11y-data-editor__options {
     border: 1px solid var(--color-gray-300, #d1d5db);
     border-radius: 0.5rem;
     padding: 0.75rem 1rem;
 }
-.furrow-editor__options legend {
+.a11y-data-editor__options legend {
     padding: 0 0.25rem;
     font-weight: 500;
 }
-.furrow-editor__options-grid {
+.a11y-data-editor__options-grid {
     display: grid;
     gap: 0.75rem;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
 }
-.furrow-editor__options label {
+.a11y-data-editor__options label {
     display: block;
     font-size: 0.8125rem;
     margin-bottom: 0.25rem;
 }
-.furrow-editor__toolbar {
+.a11y-data-editor__toolbar {
     display: flex;
     gap: 0.5rem;
 }
 @media (prefers-color-scheme: dark) {
-    .furrow-editor__grid th,
-    .furrow-editor__grid td { border-color: var(--color-gray-700, #374151); }
-    .furrow-editor__grid thead th,
-    .furrow-editor__grid tbody th,
-    td.furrow-editor__header-cell { background: var(--color-gray-800, #1f2937); }
-    .furrow-editor__cell,
-    .furrow-editor__select { background: var(--color-gray-900, #111827); border-color: var(--color-gray-700, #374151); }
+    .a11y-data-editor__grid th,
+    .a11y-data-editor__grid td { border-color: var(--color-gray-700, #374151); }
+    .a11y-data-editor__grid thead th,
+    .a11y-data-editor__grid tbody th,
+    td.a11y-data-editor__header-cell { background: var(--color-gray-800, #1f2937); }
+    .a11y-data-editor__cell,
+    .a11y-data-editor__select { background: var(--color-gray-900, #111827); border-color: var(--color-gray-700, #374151); }
 }
 </style>
