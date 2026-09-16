@@ -35,13 +35,13 @@ build they did not.
 
 | Surface | Method | Tools and versions | Date |
 |---|---|---|---|
-| Table and chart markup | 63 Pest tests asserting the output contract: header pairing by id (asserted as pairs), scope, the corner cell, no ARIA on the table, the scroll region, class-based alignment, distinct patterns, dashes and markers, the data table under every option, no script or handler, title and desc, text as text, currentColor, palette rejection at 2.90:1 and acceptance at 3.05:1 against hand-computed luminance | Pest 4, PHP 8.4, `composer test` | 2026-09-15 |
+| Table and chart markup | 65 Pest tests asserting the output contract: header pairing by id (asserted as pairs), scope, the corner cell, no ARIA on the table, the scroll region, class-based alignment, distinct patterns, dashes and markers, the data table under every option, no script or handler, title and desc, text as text, currentColor, palette rejection at 2.90:1 and acceptance at 3.05:1 against hand-computed luminance | Pest 4, PHP 8.4, `composer test` | 2026-09-15 |
 | Rendered pages | axe-core over eight fixture pages (every chart type, negatives and a gap, a collapsed table, a complex table, a wide table, twelve series) at 320, 768 and 1280 px; no sideways page scroll at 320 px; forced colours read back; print layout; the scroll region by keyboard | axe-core 4.13.0, Playwright 1.63.0, Chromium (Playwright build), `php tests/a11y/render-fixtures.php && node tests/a11y/frontend.mjs` | 2026-09-15 |
 | Control panel editors | Scripted keyboard walkthrough of both editors on a real Statamic 6.32: every Tab stop's role and name; typing, arrow keys, pasting a 2x2 grid, inserting and deleting a row and a column, setting and undoing a span, switching the chart's data source; axe-core scoped to each editor; a save and a read-back | Playwright 1.63.0, axe-core 4.13.0, `node tests/a11y/cp.mjs` | 2026-09-15 |
 | Grid editing rules | 13 Node tests over the pure editing module: layout with spans, inserting and deleting rows and columns across spans, merging and unmerging, TSV parsing, filling from a paste | `node --test` | 2026-09-15 |
 | Assistive technology | NVDA with Firefox, VoiceOver with Safari, on a complex table and a chart | See §5 | not yet |
 
-Results on the date above: **63 of 63** Pest tests; **39 checks, 0 failed** on
+Results on the date above: **65 of 65** Pest tests; **39 checks, 0 failed** on
 the fixture pages (24 axe runs, 8 overflow checks, 4 forced-colour readings,
 print, 2 keyboard checks); **0 violations** from axe on both editors and
 **every one of 53 Tab stops named**; the entry saved and read back unchanged.

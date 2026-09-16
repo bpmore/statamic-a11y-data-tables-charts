@@ -105,9 +105,11 @@ final class Dataset
     }
 
     /**
-     * Column labels from the header rows, for columns that have none. The
-     * lowest header row wins, because in a two-row header the top row
-     * groups ("Sales") and the bottom row names ("Q1").
+     * Column labels from the header rows, for columns that have none: the
+     * text of every header row cell over the column, top to bottom, so a
+     * two-row header ("2024" spanning "H1" and "H2") names the series
+     * "2024 H1" and not "H1" twice. A header's abbr is used when it has
+     * one, since a legend is where a short form earns its keep.
      */
     private function withDerivedLabels(): self
     {
@@ -123,15 +125,23 @@ final class Dataset
                 continue;
             }
 
-            for ($r = count($this->rows) - 1; $r >= 0; $r--) {
-                if (! $this->rows[$r]->header) {
+            $parts = [];
+            foreach ($this->rows as $r => $row) {
+                if (! $row->header) {
                     continue;
                 }
-                $cell = $grid->cellAt($r, $c);
-                if ($cell !== null && ! $cell->cell->isEmpty()) {
-                    $columns[$c] = $column->withLabel($cell->cell->value);
-                    break;
+                $cell = $grid->cellAt($r, $c)?->cell;
+                if ($cell === null || $cell->isEmpty()) {
+                    continue;
                 }
+                $text = $cell->abbr ?? trim($cell->value);
+                if ($text !== '' && ($parts === [] || end($parts) !== $text)) {
+                    $parts[] = $text;
+                }
+            }
+
+            if ($parts !== []) {
+                $columns[$c] = $column->withLabel(implode(' ', $parts));
             }
         }
 
