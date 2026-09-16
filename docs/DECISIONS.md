@@ -4,6 +4,19 @@ Choices that are not obvious from the code, with the alternatives turned down.
 Read this before changing an approach. Add an entry when a change settles a
 question.
 
+## The name is A11y Data Tables & Charts, and it goes all the way down
+
+Decided 15 September 2026, before any release. The working name was
+Furrow, in the style of the other addons. The marketplace name says what
+the product is, and since nothing had shipped, the technical names changed
+with it rather than leaving a second name underneath: package
+`bpmore/statamic-a11y-data-tables-charts`, namespace
+`Bpmore\A11yDataTablesCharts`, fieldtypes `a11y_table` and `a11y_chart`,
+tag `a11y_data`, and the `a11y-data-` prefix on every class and id. The
+alternative, renaming the product and keeping `furrow_*` inside, was turned
+down because every stored blueprint and template would have carried a name
+nobody could explain.
+
 ## The palette lives in config, with a per-field override
 
 Decided 15 September 2026. The brief says a failing palette is refused at save

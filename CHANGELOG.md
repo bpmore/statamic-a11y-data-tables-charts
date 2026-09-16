@@ -2,7 +2,7 @@
 
 ## 0.1.0 (unreleased)
 
-The first build, against the brief in `docs/build-furrow.md`.
+The first build, against the brief in `docs/build-a11y-data-tables-charts.md`.
 
 - `a11y_table` fieldtype: a caption (required, with no setting that waives it), header rows and header columns, column types, spans and abbreviations, edited in a grid that works from the keyboard and accepts a pasted spreadsheet.
 - `a11y_chart` fieldtype: bar, grouped bar and line, drawn from a `a11y_table` field on the same entry (the default) or from data of its own, as server-rendered SVG with no script, with the data table beneath it in every case.

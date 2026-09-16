@@ -1,13 +1,15 @@
-# Furrow: Build Brief
+# A11y Data Tables & Charts: Build Brief
 
-Package `bpmore/statamic-furrow`, namespace `Bpmore\Furrow`, repo `~/Herd/statamic-furrow`.
+Written under the working name Furrow; the product was renamed A11y Data Tables & Charts on 15 September 2026 and every name below follows.
+
+Package `bpmore/statamic-a11y-data-tables-charts`, namespace `Bpmore\A11yDataTablesCharts`, repo `~/Herd/statamic-a11y-data-tables-charts`.
 Read `build-conventions.md` first. Paid addon, target $49.
 
 ---
 
 ## 1. What it is
 
-Two fieldtypes that make it hard to publish an inaccessible data table or chart: `furrow_table` and `furrow_chart`. One dataset, two renderings, both correct.
+Two fieldtypes that make it hard to publish an inaccessible data table or chart: `a11y_table` and `a11y_chart`. One dataset, two renderings, both correct.
 
 **Market check, verified September 2026:** no accessible table addon exists. The only table-adjacent listing is Table on Steroids at $12, a CSV parser. **Nothing in 497 addons renders charts at all.**
 
@@ -55,8 +57,8 @@ v1 supports exactly three types: `bar`, `grouped_bar`, `line`. No pie, no donut.
 
 ## 5. Fieldtype behavior
 
-- `furrow_table`: grid editor. Toggle header row and header column. Add and remove rows and columns by keyboard. Paste from a spreadsheet parses TSV
-- `furrow_chart`: either inline data or a reference to a `furrow_table` field on the same entry. The reference path is preferred and should be the default, because one dataset with two renderings cannot drift
+- `a11y_table`: grid editor. Toggle header row and header column. Add and remove rows and columns by keyboard. Paste from a spreadsheet parses TSV
+- `a11y_chart`: either inline data or a reference to a `a11y_table` field on the same entry. The reference path is preferred and should be the default, because one dataset with two renderings cannot drift
 - Both fieldtypes are keyboard operable end to end, including the grid. Test this early, because grid editors are where CP accessibility usually dies
 
 ## 6. Discriminating tests
