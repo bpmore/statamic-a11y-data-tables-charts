@@ -154,10 +154,15 @@ audits your site, and it says plainly what has and has not been verified.
 
 ## Support
 
-Bugs and questions go to the repository's issue tracker. A report that
-includes the field's stored YAML and the rendered HTML gets an answer fastest.
-This addon is maintained by one person; expect a reply within a few working
-days, not hours.
+Bugs and questions go to
+[GitHub issues](https://github.com/bpmore/statamic-a11y-data-tables-charts/issues).
+A report that includes the field's stored YAML and the rendered HTML gets an
+answer fastest. This addon is maintained by one person; expect a reply within
+a few working days, not hours.
+
+The repository is private while the addon is being tested and becomes public
+when it is submitted to the Statamic Marketplace, so the link above works
+from that point on.
 
 ## Licence
 

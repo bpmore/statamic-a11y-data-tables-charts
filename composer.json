@@ -12,7 +12,12 @@
     ],
     "license": "proprietary",
     "type": "statamic-addon",
-    "homepage": "https://hada.farm",
+    "homepage": "https://github.com/bpmore/statamic-a11y-data-tables-charts",
+    "support": {
+        "issues": "https://github.com/bpmore/statamic-a11y-data-tables-charts/issues",
+        "source": "https://github.com/bpmore/statamic-a11y-data-tables-charts",
+        "docs": "https://github.com/bpmore/statamic-a11y-data-tables-charts/blob/main/README.md"
+    },
     "authors": [
         {
             "name": "Brent Passmore",
