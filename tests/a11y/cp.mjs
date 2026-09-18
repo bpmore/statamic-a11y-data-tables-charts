@@ -158,25 +158,27 @@ const restore = async (r, c, v) => { await page.focus(`#field_figures-cell-${r}-
 await restore(2, 2, original22);
 await restore(rowsBefore - 1, colsBefore - 1, originalLast);
 
-// A span, through the cell options. Growing over a cell removes it, as a
-// merge does, so the neighbour is typed back once the span is undone.
-const originalNeighbour = await cellValue(0, 2);
-await page.focus('#field_figures-cell-0-1');
+// A span, through the cell options, on the last row: the first row of a
+// real table may already span. Growing over a cell removes it, as a merge
+// does, so the neighbour is typed back once the span is undone.
+const spanRow = rowsBefore - 1;
+const originalNeighbour = await cellValue(spanRow, 2);
+await page.focus(`#field_figures-cell-${spanRow}-1`);
 await page.focus('#field_figures-colspan');
 await page.keyboard.press('ControlOrMeta+a');
 await page.keyboard.type('2');
 await page.keyboard.press('Tab');
 await page.waitForTimeout(200);
-const span = await page.evaluate(() => document.getElementById('field_figures-cell-0-1')?.closest('td')?.getAttribute('colspan'));
+const span = await page.evaluate((r) => document.getElementById(`field_figures-cell-${r}-1`)?.closest('td')?.getAttribute('colspan'), spanRow);
 if (span === '2') ok('a colspan was set from the cell options by keyboard');
 else fail(`setting a colspan gave colspan=${span}`);
-await page.focus('#field_figures-cell-0-1');
+await page.focus(`#field_figures-cell-${spanRow}-1`);
 await page.focus('#field_figures-colspan');
 await page.keyboard.press('ControlOrMeta+a');
 await page.keyboard.type('1');
 await page.keyboard.press('Tab');
 await page.waitForTimeout(200);
-await restore(0, 2, originalNeighbour);
+if (originalNeighbour !== null) await restore(spanRow, 2, originalNeighbour);
 console.log(`    announced after the span: "${await announced()}"`);
 
 // The chart: switch to inline data and back.
