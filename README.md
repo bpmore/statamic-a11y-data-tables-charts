@@ -160,10 +160,6 @@ A report that includes the field's stored YAML and the rendered HTML gets an
 answer fastest. This addon is maintained by one person; expect a reply within
 a few working days, not hours.
 
-The repository is private while the addon is being tested and becomes public
-when it is submitted to the Statamic Marketplace, so the link above works
-from that point on.
-
 ## Licence
 
 Proprietary. See `LICENSE.md`. One licence per production site; local
