@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 (23 October 2026)
+
+- The chart field's help text says "An A11y data table field", not "A A11y".
+- The README no longer says the repository is private.
+
 ## 0.1.0 (23 October 2026)
 
 The first build, against the brief in `docs/build-a11y-data-tables-charts.md`.
