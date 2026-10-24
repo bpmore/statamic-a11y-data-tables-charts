@@ -56,6 +56,8 @@ await page.waitForSelector('[data-a11y-data-table]', { timeout: 30000 });
 const snooze = page.getByRole('button', { name: /snooze/i });
 if ((await snooze.count()) > 0) { await snooze.first().click(); await page.waitForTimeout(500); }
 await page.waitForTimeout(1000);
+// Statamic 6.38 puts the tab handle in field ids (field_base_figures-…); 6.31 does not.
+const fid = await page.evaluate(() => document.querySelector('[id$="figures-caption"]').id.replace(/-caption$/, ''));
 if (shots) await page.screenshot({ path: `${shots}/cp-before.png`, fullPage: true });
 
 const describeActive = () => page.evaluate(() => {
@@ -73,12 +75,12 @@ const describeActive = () => page.evaluate(() => {
 });
 
 const announced = () => page.evaluate(() => [...document.querySelectorAll('[data-a11y-data-table] [aria-live]')].map((n) => n.textContent.trim()).join(' | '));
-const cellValue = (r, c) => page.evaluate(([r, c]) => document.getElementById(`field_figures-cell-${r}-${c}`)?.value ?? null, [r, c]);
+const cellValue = (r, c) => page.evaluate(([r, c, fid]) => document.getElementById(`${fid}-cell-${r}-${c}`)?.value ?? null, [r, c, fid]);
 
 // ------------------------------------------------- 1. keyboard walkthrough
 
 console.log('1. Keyboard walkthrough (Tab order, role, accessible name)');
-await page.focus('#field_figures-caption');
+await page.focus(`#${fid}-caption`);
 const stops = [];
 for (let i = 0; i < 120; i += 1) {
     const active = await describeActive();
@@ -96,16 +98,16 @@ if (stops.some((s) => s.within === 'a11y_chart')) ok('Tab reaches the chart edit
 else fail('Tab never reached the chart editor');
 
 console.log('\n  The grid by keyboard');
-await page.focus('#field_figures-cell-1-1');
+await page.focus(`#${fid}-cell-1-1`);
 await page.keyboard.press('ArrowDown');
 let at = await describeActive();
-if (at.id === 'field_figures-cell-2-1') ok('ArrowDown moved to the cell below');
+if (at.id === `${fid}-cell-2-1`) ok('ArrowDown moved to the cell below');
 else fail(`ArrowDown moved to ${at.id}`);
 // End does not move the caret on macOS, so the caret is put at the end directly.
 await page.evaluate(() => { const el = document.activeElement; el.setSelectionRange(el.value.length, el.value.length); });
 await page.keyboard.press('ArrowRight');
 at = await describeActive();
-if (at.id === 'field_figures-cell-2-2') ok('ArrowRight at the end of the text moved to the next cell');
+if (at.id === `${fid}-cell-2-2`) ok('ArrowRight at the end of the text moved to the next cell');
 else fail(`ArrowRight moved to ${at.id}`);
 const original22 = await cellValue(2, 2);
 await page.keyboard.press('ControlOrMeta+a');
@@ -117,7 +119,7 @@ else fail(`typing gave ${await cellValue(2, 2)}`);
 const rowsBefore = await page.locator('[data-a11y-data-table] tbody tr').count();
 const colsBefore = await page.locator('[data-a11y-data-table] thead tr:first-child th').count();
 const originalLast = await cellValue(rowsBefore - 1, colsBefore - 1);
-await page.focus(`#field_figures-cell-${rowsBefore - 1}-${colsBefore - 1}`);
+await page.focus(`#${fid}-cell-${rowsBefore - 1}-${colsBefore - 1}`);
 await page.evaluate(() => {
     const el = document.activeElement;
     const data = new DataTransfer();
@@ -154,7 +156,7 @@ await page.keyboard.press('Enter');
 await page.waitForTimeout(200);
 
 // Put back what the walkthrough changed, so the save below leaves the entry as it was.
-const restore = async (r, c, v) => { await page.focus(`#field_figures-cell-${r}-${c}`); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type(v); };
+const restore = async (r, c, v) => { await page.focus(`#${fid}-cell-${r}-${c}`); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.type(v); };
 await restore(2, 2, original22);
 await restore(rowsBefore - 1, colsBefore - 1, originalLast);
 
@@ -163,17 +165,17 @@ await restore(rowsBefore - 1, colsBefore - 1, originalLast);
 // does, so the neighbour is typed back once the span is undone.
 const spanRow = rowsBefore - 1;
 const originalNeighbour = await cellValue(spanRow, 2);
-await page.focus(`#field_figures-cell-${spanRow}-1`);
-await page.focus('#field_figures-colspan');
+await page.focus(`#${fid}-cell-${spanRow}-1`);
+await page.focus(`#${fid}-colspan`);
 await page.keyboard.press('ControlOrMeta+a');
 await page.keyboard.type('2');
 await page.keyboard.press('Tab');
 await page.waitForTimeout(200);
-const span = await page.evaluate((r) => document.getElementById(`field_figures-cell-${r}-1`)?.closest('td')?.getAttribute('colspan'), spanRow);
+const span = await page.evaluate(([r, fid]) => document.getElementById(`${fid}-cell-${r}-1`)?.closest('td')?.getAttribute('colspan'), [spanRow, fid]);
 if (span === '2') ok('a colspan was set from the cell options by keyboard');
 else fail(`setting a colspan gave colspan=${span}`);
-await page.focus(`#field_figures-cell-${spanRow}-1`);
-await page.focus('#field_figures-colspan');
+await page.focus(`#${fid}-cell-${spanRow}-1`);
+await page.focus(`#${fid}-colspan`);
 await page.keyboard.press('ControlOrMeta+a');
 await page.keyboard.type('1');
 await page.keyboard.press('Tab');
