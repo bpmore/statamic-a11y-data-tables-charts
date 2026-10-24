@@ -16,9 +16,9 @@ on Statamic 6's UI kit, and there is no Vue 2 version.
 
 ## Status
 
-0.1.0, unreleased. Everything in the brief is built and covered by the test
-suite. What is not yet done is listed in `docs/conformance.md` §5: screen
-reader verification with NVDA and VoiceOver on a released build.
+0.1.0, released 23 October 2026. Everything in the brief is built and
+covered by the test suite. What is not yet done is listed in
+`docs/conformance.md` §5: screen reader verification with NVDA and VoiceOver.
 
 ## Install
 

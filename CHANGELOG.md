@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0 (23 October 2026)
 
 The first build, against the brief in `docs/build-a11y-data-tables-charts.md`.
 
