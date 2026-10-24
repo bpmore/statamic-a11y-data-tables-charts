@@ -44,7 +44,7 @@ grid from there and grows it to fit. Everything works from the keyboard: arrow
 keys move between cells, and every button has a name.
 
 Add a **A11y data chart** field to the same blueprint. Authors choose bar, grouped
-bar or line, then either pick a A11y data table field on the entry to draw (the
+bar or line, then either pick an A11y data table field on the entry to draw (the
 default, so one set of numbers is shown twice and cannot drift) or enter data
 in the same grid. An optional summary sentence becomes the picture's
 description; left blank, the chart writes one from the numbers.

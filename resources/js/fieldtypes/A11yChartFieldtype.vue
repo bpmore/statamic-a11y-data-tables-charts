@@ -110,7 +110,7 @@ function onInlineUpdate(next) {
         </fieldset>
 
         <template v-if="source === 'field'">
-            <Field :id="id('table')" :label="__('Table field')" :instructions="__('A A11y data table field on this entry. The chart follows it whenever it changes.')" :read-only="isReadOnly" required>
+            <Field :id="id('table')" :label="__('Table field')" :instructions="__('An A11y data table field on this entry. The chart follows it whenever it changes.')" :read-only="isReadOnly" required>
                 <select v-if="tableFields.length" :id="id('table')" v-model="tableHandle" class="a11y-data-chart-editor__select" :disabled="isReadOnly">
                     <option :value="null">{{ __('Choose a table field') }}</option>
                     <option v-for="f in tableFields" :key="f.value" :value="f.value">{{ f.label }}</option>
