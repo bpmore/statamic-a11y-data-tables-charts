@@ -4,20 +4,26 @@
  * move between cells, and the down arrow to read on.
  */
 import { nvdaTest as test } from '@guidepup/playwright';
+import { WindowsKeyCodes, WindowsModifiers } from '@guidepup/guidepup';
 import { open, walk, landedOn, heardAll } from './walk.js';
 
 test.use({ nvdaStartOptions: { capture: true } });
 
+const TOP = { keyCode: [WindowsKeyCodes.Home], modifiers: [WindowsModifiers.Control] };
+
 /**
  * Make sure NVDA is in browse mode, where T and G are quick keys. Guidepup
  * reaches the page by tabbing once, and on a page whose first Tab stop is
- * the table's scroll region NVDA can be left in focus mode, where T is
- * just a letter. NVDA+Space says which mode it switched to.
+ * the table's scroll region NVDA is left in focus mode, where T is just a
+ * letter. NVDA signals a mode change with a sound, not speech, so the test
+ * is Control+Home: in browse mode it reads the page's heading, in focus
+ * mode it says nothing.
  */
 async function browseMode(nvda) {
-    await nvda.perform(nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode);
-    if (/focus mode/i.test(await nvda.lastSpokenPhrase())) {
+    for (let tries = 0; tries < 2; tries++) {
+        if (/heading/i.test((await nvda.spokenPhraseLog()).join(' '))) return;
         await nvda.perform(nvda.keyboardCommands.toggleBetweenBrowseAndFocusMode);
+        await nvda.perform(TOP);
     }
 }
 
