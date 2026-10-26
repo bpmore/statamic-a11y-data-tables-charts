@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.2 (26 October 2026)
 
 - Screen readers no longer read the labels inside a chart. NVDA with Firefox
   read every tick, axis title and value label before the chart's name; the

@@ -1,6 +1,6 @@
 # A11y Data Tables & Charts: WCAG 2.1 AA conformance note
 
-**Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.1 (23 October 2026)
+**Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.2 (26 October 2026)
 **Target:** WCAG 2.1 Level AA, with 2.2 AA noted where met
 **Date:** 15 September 2026
 **Prepared by:** Had A Farm LLC, from the addon's own checks
@@ -119,8 +119,9 @@ again), 3.3.8 Accessible Authentication (N/A).
 
 ## 5. Assistive technology
 
-Scripted, on 26 October 2026, against 0.1.1's renderers. Guidepup drove each
-reader with the keys its users use and recorded every phrase it spoke. The
+Scripted, on 26 October 2026, against 0.1.1's renderers and again against
+0.1.2's. Guidepup drove each reader with the keys its users use and
+recorded every phrase it spoke. The
 specs are in `tests/a11y/screen-readers/`; the full transcripts are kept as
 an artifact of every run of `.github/workflows/screen-readers.yml`. All 7
 checks passed on the first attempt: 4 on NVDA, 3 on VoiceOver.
@@ -147,7 +148,7 @@ and the table inside reads its headers:
 | On to the disclosure | "button, expanded, Data table:, Apples harvested per year" (collapsed fixture: "button, collapsed, …") | "Data table: Apples harvested per year expanded summary" (collapsed fixture: "collapsed summary") |
 | Into the table, to 2021's value | "Apples (kg), column 2, 1,200" | "Apples (kg) 1,200 column 2 of 2" |
 
-**Found, and changed after 0.1.1:**
+**Found, and changed in 0.1.2:**
 
 - **NVDA read the chart's labels before its name.** On reaching the
   picture with G, NVDA in Firefox first read every text label inside it:
