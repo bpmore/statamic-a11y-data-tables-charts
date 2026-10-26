@@ -51,9 +51,13 @@ export function landedOn(heard, value) {
     return heard.find((h) => word.test(h.said))?.said ?? '';
 }
 
-/** Soft, so one walk reports every missing phrase, not just the first. */
+/**
+ * Soft, so one walk reports every missing phrase, not just the first.
+ * Spaces and case are ignored: NVDA says "Q1" as "Q 1".
+ */
 export function heardAll(said, phrases, what) {
+    const plain = (text) => text.toLowerCase().replace(/\s+/g, '');
     for (const phrase of phrases) {
-        expect.soft(said.toLowerCase(), `${what}: "${phrase}"`).toContain(phrase.toLowerCase());
+        expect.soft(plain(said), `${what}: "${phrase}"`).toContain(plain(phrase));
     }
 }
