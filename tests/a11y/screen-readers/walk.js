@@ -27,7 +27,7 @@ export async function open(page, reader, name) {
  * leaves the transcript behind.
  */
 export async function walk(reader, readerName, name, steps, testInfo) {
-    const heard = [];
+    const heard = [{ label: 'Page opened', said: (await reader.spokenPhraseLog()).join(' | ') }];
     for (const [label, press] of steps) {
         const before = (await reader.spokenPhraseLog()).length;
         await press();
@@ -46,7 +46,8 @@ export async function walk(reader, readerName, name, steps, testInfo) {
  * reader landed on, wherever in the walk that turned out to be.
  */
 export function landedOn(heard, value) {
-    const word = new RegExp(`(^|[^\\d,.])${value.replace(/[.,]/g, '\\$&')}([^\\d,.]|$)`);
+    // Not part of a longer number: "10" is not in "100", "1,000" or "0.10".
+    const word = new RegExp(`(?<![\\d,.])${value.replace(/[.,]/g, '\\$&')}(?![\\d]|[,.]\\d)`);
     return heard.find((h) => word.test(h.said))?.said ?? '';
 }
 
