@@ -1,6 +1,6 @@
 # A11y Data Tables and Charts: WCAG 2.1 AA conformance note
 
-**Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.3 (26 October 2026)
+**Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.4 (26 October 2026)
 **Target:** WCAG 2.1 Level AA, with 2.2 AA noted where met
 **Date:** 15 September 2026
 **Prepared by:** Had A Farm LLC, from the addon's own checks
@@ -33,6 +33,10 @@ not the same as a person using them, and §5 says where the difference
 matters.
 
 ## 2. What was tested, with what
+
+The tests and scripts named here are in the repository,
+<https://github.com/bpmore/statamic-a11y-data-tables-charts>, not in the
+Composer download.
 
 | Surface | Method | Tools and versions | Date |
 |---|---|---|---|

@@ -1,0 +1,13 @@
+# Left out of the Composer download: what builds and tests the addon, not
+# what runs it. All of it stays in the repository.
+/.claude export-ignore
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/tests export-ignore
+/phpunit.xml export-ignore
+/vite.config.js export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/docs/build-a11y-data-tables-charts.md export-ignore
+/docs/build-conventions.md export-ignore

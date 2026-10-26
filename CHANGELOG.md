@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 (26 October 2026)
+
+- The Composer download leaves out what builds and tests the addon: the
+  tests, the CI workflows, the Vite and npm files, and the internal build
+  notes. They stay in the repository. Nothing that runs on a site changed.
+
 ## 0.1.3 (26 October 2026)
 
 - The display name is "A11y Data Tables and Charts", with "and" for the "&".
