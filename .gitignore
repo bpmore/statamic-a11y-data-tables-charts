@@ -8,3 +8,6 @@ composer.lock
 .playwright-mcp
 /tests/a11y/fixtures/
 /tests/a11y/screenshots/
+/tests/a11y/screen-readers/node_modules/
+/tests/a11y/screen-readers/logs/
+/tests/a11y/screen-readers/results/

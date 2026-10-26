@@ -1,0 +1,110 @@
+# The fixture pages read by real screen readers: NVDA with Firefox on a
+# Windows runner, VoiceOver with WebKit on a macOS runner. Guidepup drives
+# each reader and records what it says; the transcripts are kept as an
+# artifact whether the run passes or fails, because a person reading them
+# is the point.
+#
+# Separate from the suite because it is slower and a screen reader on a
+# shared runner can drop a keystroke. The specs retry twice for that.
+
+name: Screen readers
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The fixtures are rendered by the addon's own PHP renderers, once, and
+  # handed to both readers, so neither runner needs PHP.
+  fixtures:
+    name: Render the fixture pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, libxml, mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Render the fixtures
+        run: php tests/a11y/render-fixtures.php
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fixtures
+          path: tests/a11y/fixtures/
+
+  read:
+    name: ${{ matrix.name }}
+    needs: fixtures
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: NVDA with Firefox
+            os: windows-latest
+            reader: nvda
+            browser: firefox
+          - name: VoiceOver with WebKit
+            os: macos-latest
+            reader: voiceover
+            browser: webkit
+
+    env:
+      SCREEN_READER: ${{ matrix.reader }}
+
+    defaults:
+      run:
+        working-directory: tests/a11y/screen-readers
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: fixtures
+          path: tests/a11y/fixtures/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install the test packages
+        run: npm ci
+
+      # Turns on scripting for the reader and, on macOS, the permissions
+      # VoiceOver needs. Then fetches the reader build this Guidepup expects.
+      - name: Set up the screen reader
+        run: |
+          npx @guidepup/setup setup --ci
+          npx @guidepup/setup install
+
+      - name: Install the browser
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Read the fixtures
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transcripts-${{ matrix.reader }}
+          path: |
+            tests/a11y/screen-readers/logs/
+            tests/a11y/screen-readers/results/
+          if-no-files-found: ignore

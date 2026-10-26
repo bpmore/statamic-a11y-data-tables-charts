@@ -1,0 +1,11 @@
+{
+    "name": "statamic-a11y-data-tables-charts-screen-readers",
+    "private": true,
+    "type": "module",
+    "devDependencies": {
+        "@guidepup/guidepup": "0.36.4",
+        "@guidepup/playwright": "0.20.0",
+        "@guidepup/setup": "0.29.3",
+        "@playwright/test": "1.63.0"
+    }
+}
