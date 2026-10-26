@@ -5,7 +5,7 @@
  */
 import { nvdaTest as test } from '@guidepup/playwright';
 import { WindowsKeyCodes, WindowsModifiers } from '@guidepup/guidepup';
-import { open, walk, landedOn, heardAll } from './walk.js';
+import { fixture, walk, landedOn, heardAll } from './walk.js';
 
 test.use({ nvdaStartOptions: { capture: true } });
 
@@ -27,10 +27,30 @@ async function browseMode(nvda) {
     }
 }
 
+/**
+ * Open a fixture with NVDA at the top of it in browse mode. Guidepup's way
+ * onto the page presses Tab once, and Tab onto the table's scroll region
+ * is its own test below, so the region is out of the Tab order for that
+ * one keystroke and put back straight after.
+ */
+async function arrive(page, nvda, name) {
+    await page.goto(fixture(name), { waitUntil: 'load' });
+    await page.locator('main h1').waitFor();
+    await page.evaluate(() => document.querySelectorAll('[tabindex="0"]').forEach((e) => {
+        e.dataset.tabindex = '0';
+        e.removeAttribute('tabindex');
+    }));
+    await nvda.navigateToWebContent();
+    await page.evaluate(() => document.querySelectorAll('[data-tabindex]').forEach((e) => {
+        e.setAttribute('tabindex', e.dataset.tabindex);
+        delete e.dataset.tabindex;
+    }));
+    await browseMode(nvda);
+}
+
 test('complex table: each cell is read with its spanning header, column header and row header', async ({ page, nvda }, testInfo) => {
     const k = nvda.keyboardCommands;
-    await open(page, nvda, 'complex-table');
-    await browseMode(nvda);
+    await arrive(page, nvda, 'complex-table');
     const heard = await walk(nvda, 'nvda', 'complex-table', [
         ['T (next table)', () => nvda.perform(k.moveToNextTable)],
         ['Down arrow (from the caption to the first cell)', () => nvda.next()],
@@ -52,8 +72,7 @@ test('complex table: each cell is read with its spanning header, column header a
 
 test('chart: the picture is read with its title and description, then the data table beneath it', async ({ page, nvda }, testInfo) => {
     const k = nvda.keyboardCommands;
-    await open(page, nvda, 'bar');
-    await browseMode(nvda);
+    await arrive(page, nvda, 'bar');
     const heard = await walk(nvda, 'nvda', 'bar', [
         ['G (next graphic)', () => nvda.perform(k.moveToNextGraphic)],
         ['Down arrow', () => nvda.next()],
@@ -74,8 +93,7 @@ test('chart: the picture is read with its title and description, then the data t
 
 test('collapsed chart table: the disclosure says it is collapsed', async ({ page, nvda }, testInfo) => {
     const k = nvda.keyboardCommands;
-    await open(page, nvda, 'collapsed');
-    await browseMode(nvda);
+    await arrive(page, nvda, 'collapsed');
     const heard = await walk(nvda, 'nvda', 'collapsed', [
         ['G (next graphic)', () => nvda.perform(k.moveToNextGraphic)],
         ['Down arrow', () => nvda.next()],
@@ -83,4 +101,19 @@ test('collapsed chart table: the disclosure says it is collapsed', async ({ page
 
     heardAll(heard[1].said, ['graphic', 'Apples harvested per year'], 'the picture');
     heardAll(heard[2].said, ['Data table', 'collapsed'], 'the disclosure after the picture');
+});
+
+test('Tab to the table: the scroll region is named by the caption, and the table can be read from there', async ({ page, nvda }, testInfo) => {
+    const k = nvda.keyboardCommands;
+    await arrive(page, nvda, 'complex-table');
+    const heard = await walk(nvda, 'nvda', 'tab-to-table', [
+        ['Tab', () => nvda.perform(k.readNextFocusableItem)],
+        ['Control+Alt+Down', () => nvda.perform(k.moveToNextRow)],
+        ['Down arrow', () => nvda.next()],
+        ['Escape', () => nvda.perform(k.exitFocusMode)],
+        ['Down arrow', () => nvda.next()],
+        ['Control+Alt+Down', () => nvda.perform(k.moveToNextRow)],
+    ], testInfo);
+
+    heardAll(heard[1].said, ['Sales by region and quarter'], 'the scroll region is named by the caption');
 });
