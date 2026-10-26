@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3 (26 October 2026)
+
+- The display name is "A11y Data Tables and Charts", with "and" for the "&".
+  Package, namespace, fieldtype and tag names are unchanged.
+- The README has a tip for tables with two header rows: put the row header
+  column's label in the top-left cell, spanning both rows, and VoiceOver no
+  longer reads a stray row header on it.
+- `docs/conformance.md` §5 records the markup variants tried for the two
+  screen reader behaviours still open, and what they showed.
+
 ## 0.1.2 (26 October 2026)
 
 - Screen readers no longer read the labels inside a chart. NVDA with Firefox
