@@ -1,4 +1,4 @@
-# A11y Data Tables & Charts: WCAG 2.1 AA conformance note
+# A11y Data Tables and Charts: WCAG 2.1 AA conformance note
 
 **Product:** `bpmore/statamic-a11y-data-tables-charts` 0.1.2 (26 October 2026)
 **Target:** WCAG 2.1 Level AA, with 2.2 AA noted where met

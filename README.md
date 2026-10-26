@@ -1,4 +1,4 @@
-# A11y Data Tables & Charts for Statamic
+# A11y Data Tables and Charts for Statamic
 
 Two fieldtypes that make it hard to publish an inaccessible data table or
 chart: `a11y_table` and `a11y_chart`. One dataset, two renderings, both

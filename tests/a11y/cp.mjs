@@ -37,7 +37,7 @@ let failures = 0;
 const fail = (message) => { failures += 1; console.log(`  ✗ ${message}`); };
 const ok = (message) => console.log(`  ✓ ${message}`);
 
-console.log(`A11y Data Tables & Charts control panel check, ${new Date().toISOString().slice(0, 10)}`);
+console.log(`A11y Data Tables and Charts control panel check, ${new Date().toISOString().slice(0, 10)}`);
 console.log(`  playwright ${require('playwright/package.json').version}, axe-core ${require('axe-core/package.json').version}`);
 console.log(`  ${entry}\n`);
 

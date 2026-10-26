@@ -17,6 +17,10 @@ alternative, renaming the product and keeping `furrow_*` inside, was turned
 down because every stored blueprint and template would have carried a name
 nobody could explain.
 
+On 26 October 2026 the display name became "A11y Data Tables and Charts",
+with "and" for the "&", to match the marketplace listing. Only the words
+people read changed; every technical name above stayed as it was.
+
 ## The palette lives in config, with a per-field override
 
 Decided 15 September 2026. The brief says a failing palette is refused at save

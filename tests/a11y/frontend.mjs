@@ -48,7 +48,7 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const base = `http://127.0.0.1:${server.address().port}`;
 
-console.log(`A11y Data Tables & Charts front-end check, ${new Date().toISOString().slice(0, 10)}`);
+console.log(`A11y Data Tables and Charts front-end check, ${new Date().toISOString().slice(0, 10)}`);
 console.log(`  playwright ${require('playwright/package.json').version}, axe-core ${require('axe-core/package.json').version}\n`);
 
 const browser = await chromium.launch();
