@@ -164,11 +164,22 @@ and the table inside reads its headers:
 - **Tab onto the table reads all of it under NVDA.** When the scroll region
   takes focus, NVDA reads the whole table, cell by cell, before the user
   moves. After it, the down arrow goes into the table and reads it
-  normally. On a long table that first reading is long.
+  normally. On a long table that first reading is long. It is the same with
+  the region as `role="group"`, named by `aria-label` instead of the
+  caption, and with the Tab stop on the table instead of its wrapper, so it
+  is how NVDA with Firefox treats a focused container rather than something
+  the markup controls. The Tab stop stays: it is how a keyboard user
+  reaches a wide table to scroll it (2.1.1, §3).
 - **VoiceOver adds a word on one header cell.** On "Region" (row 2,
   column 1, a column header in the second header row) VoiceOver says
-  "South Region". The markup gives that cell no row header. The cause has
-  not been looked into.
+  "South Region". The markup gives that cell no row header. It is the same
+  with `scope` alone, with `id` and `headers` alone, and with both, so it
+  is not a choice the renderer makes. It does not happen when the author
+  puts "Region" in the top-left cell spanning both header rows: VoiceOver
+  then reads the column without the stray word ("row 3 of 4 North"), and
+  the cells still read their spanning, column and row headers. The README
+  gives authors that tip. Checked on 26 October 2026 against the renderer's
+  own output for that layout.
 
 **What this does not cover:**
 

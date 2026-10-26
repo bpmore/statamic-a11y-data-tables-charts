@@ -36,7 +36,7 @@ php please vendor:publish --tag=statamic-a11y-data-tables-charts-config
 
 ## The fields
 
-Add a **A11y data table** field to a blueprint. Authors get a caption input, a
+Add an **A11y data table** field to a blueprint. Authors get a caption input, a
 grid of cells with a header row of column letters and a header column of row
 numbers, per-column settings (text or number, and whether the column holds row
 headers), per-row settings (header row, insert, delete), and cell options for
@@ -44,7 +44,7 @@ spans and abbreviations. Pasting rows from a spreadsheet into a cell fills the
 grid from there and grows it to fit. Everything works from the keyboard: arrow
 keys move between cells, and every button has a name.
 
-Add a **A11y data chart** field to the same blueprint. Authors choose bar, grouped
+Add an **A11y data chart** field to the same blueprint. Authors choose bar, grouped
 bar or line, then either pick an A11y data table field on the entry to draw (the
 default, so one set of numbers is shown twice and cannot drift) or enter data
 in the same grid. An optional summary sentence becomes the picture's
@@ -53,6 +53,14 @@ description; left blank, the chart writes one from the numbers.
 The chart's series are the table's number columns, named by its header row,
 and its categories are the row header column (or the first column when none
 is marked).
+
+**A tip for tables with two header rows.** When the first column holds row
+headers and the table has two header rows, put that column's label in the
+top-left cell and set it to span 2 rows (cell options, "Rows spanned"),
+rather than leaving the top-left cell empty and putting the label in the
+second row. Both are correct markup, but with the label in the second row
+VoiceOver reads a stray row header on it: moving down to "Region" it says
+"South Region". With the label spanning from the top, it does not.
 
 ## Templates
 
