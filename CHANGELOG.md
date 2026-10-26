@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Screen readers no longer read the labels inside a chart. NVDA with Firefox
+  read every tick, axis title and value label before the chart's name; the
+  drawing is now hidden, so the picture is its title and its summary.
+- NVDA and VoiceOver are run over the front-end output by script on every
+  push (`.github/workflows/screen-readers.yml`). What they said is in
+  `docs/conformance.md` §5.
+
 ## 0.1.1 (23 October 2026)
 
 - The chart field's help text says "An A11y data table field", not "A A11y".

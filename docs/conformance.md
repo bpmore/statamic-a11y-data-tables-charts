@@ -143,19 +143,23 @@ and the table inside reads its headers:
 
 | Move | NVDA with Firefox | VoiceOver with WebKit |
 |---|---|---|
-| To the picture | "… Apples harvested per year, graphic, Values range from 980 (in 2023) to 1,730 (in 2024)." | "Apples harvested per year Values range from 980 (in 2023) to 1,730 (in 2024). image" |
+| To the picture | "figure, Apples harvested per year, graphic, Values range from 980 (in 2023) to 1,730 (in 2024)." | "Apples harvested per year Values range from 980 (in 2023) to 1,730 (in 2024). image" |
 | On to the disclosure | "button, expanded, Data table:, Apples harvested per year" (collapsed fixture: "button, collapsed, …") | "Data table: Apples harvested per year expanded summary" (collapsed fixture: "collapsed summary") |
 | Into the table, to 2021's value | "Apples (kg), column 2, 1,200" | "Apples (kg) 1,200 column 2 of 2" |
 
-**Found, and not yet changed:**
+**Found, and changed after 0.1.1:**
 
-- **NVDA reads the chart's labels before its name.** On reaching the
-  picture with G, NVDA in Firefox first reads every text label inside it:
+- **NVDA read the chart's labels before its name.** On reaching the
+  picture with G, NVDA in Firefox first read every text label inside it:
   "figure, Apples harvested per year, 0, 500, 1,000, 1,500, 2,000, Apples
   (kg), 2021, 2022, 2023, 2024, 1,200, 1,550, 980, 1,730", then the name and
-  description. VoiceOver reads only the name and description. Nothing is
-  lost or wrong, but it is noise before the part that matters, and on a
-  chart with many labels it is a lot of noise.
+  description. VoiceOver read only the name and description. The drawing is
+  now one `aria-hidden` group beside the title and desc, and NVDA says
+  "figure, Apples harvested per year, graphic, Values range from 980 (in
+  2023) to 1,730 (in 2024)." The specs now fail if a label is spoken.
+
+**Found, and not yet changed:**
+
 - **Tab onto the table reads all of it under NVDA.** When the scroll region
   takes focus, NVDA reads the whole table, cell by cell, before the user
   moves. After it, the down arrow goes into the table and reads it

@@ -19,7 +19,7 @@ on Statamic 6's UI kit, and there is no Vue 2 version.
 0.1.1, released 23 October 2026. Everything in the brief is built and
 covered by the test suite. NVDA and VoiceOver have been run over the front-end
 output by script, not yet by a person; `docs/conformance.md` §5 has what they
-said, three rough edges they found, and what was not covered.
+said, the rough edges they found, and what was not covered.
 
 ## Install
 
