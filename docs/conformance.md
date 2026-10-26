@@ -27,9 +27,10 @@ It does not cover:
   configured is outside this claim.
 
 Automated checks are not conformance. This note records what tools found and
-what a scripted keyboard walkthrough found. §5 records what people using
-assistive technology found on the build they tested, and says nothing about a
-build they did not.
+what a scripted keyboard walkthrough found. §5 records what two real screen
+readers said when a script drove them through the fixture pages. That is
+not the same as a person using them, and §5 says where the difference
+matters.
 
 ## 2. What was tested, with what
 
@@ -39,7 +40,7 @@ build they did not.
 | Rendered pages | axe-core over eight fixture pages (every chart type, negatives and a gap, a collapsed table, a complex table, a wide table, twelve series) at 320, 768 and 1280 px; no sideways page scroll at 320 px; forced colours read back; print layout; the scroll region by keyboard | axe-core 4.13.0, Playwright 1.63.0, Chromium (Playwright build), `php tests/a11y/render-fixtures.php && node tests/a11y/frontend.mjs` | 2026-09-15 |
 | Control panel editors | Scripted keyboard walkthrough of both editors on a real Statamic 6.32: every Tab stop's role and name; typing, arrow keys, pasting a 2x2 grid, inserting and deleting a row and a column, setting and undoing a span, switching the chart's data source; axe-core scoped to each editor; a save and a read-back | Playwright 1.63.0, axe-core 4.13.0, `node tests/a11y/cp.mjs` | 2026-09-15 |
 | Grid editing rules | 13 Node tests over the pure editing module: layout with spans, inserting and deleting rows and columns across spans, merging and unmerging, TSV parsing, filling from a paste | `node --test` | 2026-09-15 |
-| Assistive technology | NVDA with Firefox, VoiceOver with Safari, on a complex table and a chart | See §5 | not yet |
+| Assistive technology | NVDA with Firefox and VoiceOver with WebKit, driven by script through the complex table, a bar chart and a collapsed chart table, every phrase recorded and checked against the headers, names and states this note claims | NVDA 2026.2 (Guidepup build) on Windows Server 2025, Firefox 155 (Playwright build); VoiceOver on macOS 26, WebKit 26.6 (Playwright build); Guidepup 0.36.4, `@guidepup/playwright` 0.20.0, `.github/workflows/screen-readers.yml` | 2026-10-26 |
 
 Results on the date above: **65 of 65** Pest tests; **39 checks, 0 failed** on
 the fixture pages (24 axe runs, 8 overflow checks, 4 forced-colour readings,
@@ -118,12 +119,62 @@ again), 3.3.8 Accessible Authentication (N/A).
 
 ## 5. Assistive technology
 
-Not yet done on this build. Still to do: NVDA with Firefox and VoiceOver
-with Safari on the complex table fixture (`tests/a11y/fixtures/complex-table.html`),
-confirming that moving between cells announces the spanning header, the
-column header and the row header; and on a chart fixture, confirming the
-title and description are read for the image and the table beneath is
-navigable. Findings go here with the versions used.
+Scripted, on 26 October 2026, against 0.1.1's renderers. Guidepup drove each
+reader with the keys its users use and recorded every phrase it spoke. The
+specs are in `tests/a11y/screen-readers/`; the full transcripts are kept as
+an artifact of every run of `.github/workflows/screen-readers.yml`. All 7
+checks passed on the first attempt: 4 on NVDA, 3 on VoiceOver.
+
+**Complex table** (`complex-table.html`: a spanning header row over a
+column header row, row headers down the first column). Moving between cells
+announces the spanning header, the column header and the row header:
+
+| Move | NVDA with Firefox | VoiceOver with WebKit |
+|---|---|---|
+| To the table | "Sales by region and quarter, region, Sales by region and quarter, table, with 4 rows and 5 columns, caption, Sales by region and quarter" | "Sales by region and quarter table 5 columns, 4 rows" |
+| Down to North | "row 3, North" | "row 3 of 4 North" |
+| Right to North, Q1 | "First half Q 1, column 2, 10" | "First half, Q1, and North 10 column 2 of 5" |
+| Right to North, Q3 | "Second half Q 3, column 4, 30" | "Second half and Q3 30 column 4 of 5" |
+| Down to South, Q3 | "South, row 4, 50" | "row 4 of 4 South 50" |
+
+**Chart** (`bar.html`, `collapsed.html`). The picture is read with its
+title and its description, the disclosure after it says whether it is open,
+and the table inside reads its headers:
+
+| Move | NVDA with Firefox | VoiceOver with WebKit |
+|---|---|---|
+| To the picture | "… Apples harvested per year, graphic, Values range from 980 (in 2023) to 1,730 (in 2024)." | "Apples harvested per year Values range from 980 (in 2023) to 1,730 (in 2024). image" |
+| On to the disclosure | "button, expanded, Data table:, Apples harvested per year" (collapsed fixture: "button, collapsed, …") | "Data table: Apples harvested per year expanded summary" (collapsed fixture: "collapsed summary") |
+| Into the table, to 2021's value | "Apples (kg), column 2, 1,200" | "Apples (kg) 1,200 column 2 of 2" |
+
+**Found, and not yet changed:**
+
+- **NVDA reads the chart's labels before its name.** On reaching the
+  picture with G, NVDA in Firefox first reads every text label inside it:
+  "figure, Apples harvested per year, 0, 500, 1,000, 1,500, 2,000, Apples
+  (kg), 2021, 2022, 2023, 2024, 1,200, 1,550, 980, 1,730", then the name and
+  description. VoiceOver reads only the name and description. Nothing is
+  lost or wrong, but it is noise before the part that matters, and on a
+  chart with many labels it is a lot of noise.
+- **Tab onto the table reads all of it under NVDA.** When the scroll region
+  takes focus, NVDA reads the whole table, cell by cell, before the user
+  moves. After it, the down arrow goes into the table and reads it
+  normally. On a long table that first reading is long.
+- **VoiceOver adds a word on one header cell.** On "Region" (row 2,
+  column 1, a column header in the second header row) VoiceOver says
+  "South Region". The markup gives that cell no row header. The cause has
+  not been looked into.
+
+**What this does not cover:**
+
+- A person. A script records what a reader says; it does not judge whether
+  the experience is good, and it does not try what a user might try instead.
+- Safari and a stock Firefox. The browsers are Playwright's builds of WebKit
+  and Firefox. VoiceOver with the Safari app was not run.
+- The control panel editors. They need a running Statamic site, and the
+  runners have none. Their keyboard walkthrough (§2) is not a screen reader
+  test.
+- JAWS, TalkBack, VoiceOver on iOS and Narrator.
 
 ## 6. Print and zoom
 

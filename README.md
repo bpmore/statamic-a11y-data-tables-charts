@@ -17,8 +17,9 @@ on Statamic 6's UI kit, and there is no Vue 2 version.
 ## Status
 
 0.1.1, released 23 October 2026. Everything in the brief is built and
-covered by the test suite. What is not yet done is listed in
-`docs/conformance.md` §5: screen reader verification with NVDA and VoiceOver.
+covered by the test suite. NVDA and VoiceOver have been run over the front-end
+output by script, not yet by a person; `docs/conformance.md` §5 has what they
+said, three rough edges they found, and what was not covered.
 
 ## Install
 
