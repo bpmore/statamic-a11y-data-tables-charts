@@ -29,23 +29,21 @@ async function browseMode(nvda) {
 
 /**
  * Open a fixture with NVDA at the top of it in browse mode. Guidepup's way
- * onto the page presses Tab once, and Tab onto the table's scroll region
- * is its own test below, so the region is out of the Tab order for that
- * one keystroke and put back straight after.
+ * onto the page presses Tab once and expects to land on something in the
+ * page; on the complex table page the only Tab stop is the scroll region,
+ * which Tab to the table tests on its own, below. So a plain button stands
+ * first for that one keystroke and is taken away straight after.
  */
 async function arrive(page, nvda, name) {
     await page.goto(fixture(name), { waitUntil: 'load' });
     await page.locator('main h1').waitFor();
-    await page.evaluate(() => document.querySelectorAll('[tabindex="0"]').forEach((e) => {
-        e.dataset.tabindex = '0';
-        e.removeAttribute('tabindex');
-    }));
+    await page.evaluate(() => document.body.insertAdjacentHTML('afterbegin', '<button id="sr-start">Start</button>'));
     await nvda.navigateToWebContent();
-    await page.evaluate(() => document.querySelectorAll('[data-tabindex]').forEach((e) => {
-        e.setAttribute('tabindex', e.dataset.tabindex);
-        delete e.dataset.tabindex;
-    }));
+    await page.evaluate(() => document.getElementById('sr-start').remove());
+    await nvda.perform(TOP);
     await browseMode(nvda);
+    await nvda.clearSpokenPhraseLog();
+    await nvda.perform(TOP);
 }
 
 test('complex table: each cell is read with its spanning header, column header and row header', async ({ page, nvda }, testInfo) => {
