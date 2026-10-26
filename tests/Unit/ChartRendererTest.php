@@ -181,6 +181,20 @@ it('names and describes the SVG through a title and a desc', function () {
     expect($svg[0]->firstElementChild->nodeName)->toBe('title');
 });
 
+it('hides everything drawn from screen readers, leaving the title and desc', function (string $type) {
+    $html = (new ChartRenderer)->render(fiveSeries(), ['type' => $type, 'id' => 'h']);
+
+    $x = dom($html);
+
+    // NVDA with Firefox reads text inside role="img" unless it is hidden.
+    $drawing = nodes($x, "//svg/g[@aria-hidden='true']");
+    expect($drawing)->toHaveCount(1);
+    expect(nodes($x, '//svg/*'))->toHaveCount(4); // title, desc, style, the drawing
+    expect(nodes($x, '//svg/text'))->toHaveCount(0);
+    expect(nodes($x, "//svg/g[@aria-hidden='true']//text"))->not->toHaveCount(0);
+    expect(nodes($x, '//svg//*[not(ancestor-or-self::g[@aria-hidden])][self::title or self::desc]'))->toHaveCount(2);
+})->with(['bar', 'grouped_bar', 'line']);
+
 it('writes a one-sentence summary of the trend when none is given', function () {
     $html = (new ChartRenderer)->render(fiveSeries(), ['type' => 'line', 'id' => 'd']);
 

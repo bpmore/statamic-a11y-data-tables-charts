@@ -5,7 +5,7 @@
  */
 import { nvdaTest as test } from '@guidepup/playwright';
 import { WindowsKeyCodes, WindowsModifiers } from '@guidepup/guidepup';
-import { fixture, walk, landedOn, heardAll } from './walk.js';
+import { fixture, walk, landedOn, heardAll, heardNone } from './walk.js';
 
 test.use({ nvdaStartOptions: { capture: true } });
 
@@ -96,6 +96,8 @@ test('chart: the picture is read with its title and description, then the data t
     ], testInfo);
 
     heardAll(heard[1].said, ['graphic', 'Apples harvested per year', 'Values range from 980'], 'the picture');
+    // Axis ticks, the axis title and a value only the drawing has: the picture is its title and description.
+    heardNone(heard[1].said, ['500', 'Apples (kg)', '1,550'], 'the drawing inside the picture');
     heardAll(heard[2].said, ['Data table', 'expanded'], 'the disclosure after the picture');
     heardAll(heard[3].said, ['table', 'Apples harvested per year'], 'the data table is named by its caption');
     // Only the steps inside the table: the picture's own labels include the same numbers.

@@ -56,8 +56,16 @@ export function landedOn(heard, value) {
  * Spaces and case are ignored: NVDA says "Q1" as "Q 1".
  */
 export function heardAll(said, phrases, what) {
-    const plain = (text) => text.toLowerCase().replace(/\s+/g, '');
     for (const phrase of phrases) {
         expect.soft(plain(said), `${what}: "${phrase}"`).toContain(plain(phrase));
     }
 }
+
+/** The other way round: none of these was said. */
+export function heardNone(said, phrases, what) {
+    for (const phrase of phrases) {
+        expect.soft(plain(said), `${what}: "${phrase}"`).not.toContain(plain(phrase));
+    }
+}
+
+const plain = (text) => text.toLowerCase().replace(/\s+/g, '');

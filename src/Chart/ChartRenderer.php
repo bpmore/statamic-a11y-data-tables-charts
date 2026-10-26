@@ -211,7 +211,10 @@ final class ChartRenderer
             .'<title'.Html::attrs(['id' => $id.'-title']).'>'.Html::e($caption).'</title>'
             .'<desc'.Html::attrs(['id' => $id.'-desc']).'>'.Html::e($summary).'</desc>'
             .$style
-            .$out
+            // role="img" should make everything drawn presentational, but
+            // NVDA with Firefox still reads every label inside it before
+            // the name. Hidden here, the picture is its title and desc.
+            .'<g class="a11y-data-drawing" aria-hidden="true">'.$out.'</g>'
             .'</svg>';
     }
 
