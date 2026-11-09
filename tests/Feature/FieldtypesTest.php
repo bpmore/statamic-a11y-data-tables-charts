@@ -6,6 +6,7 @@ use Bpmore\A11yDataTablesCharts\Dataset\Limits;
 use Bpmore\A11yDataTablesCharts\Fieldtypes\A11yChart;
 use Bpmore\A11yDataTablesCharts\Fieldtypes\A11yTable;
 use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
+use Illuminate\Support\Facades\Log;
 use Statamic\Facades\Blueprint;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
@@ -335,4 +336,88 @@ it('renders a stored table with outsized spans clamped, and a chart of one too w
     expect($chart)->toStartWith('<p');
     expect($chart)->toContain('cannot be drawn');
     expect($chart)->toContain('wider than');
+});
+
+/**
+ * Regression: a stored table past the limits (written to the entry file by
+ * hand, so the rule never saw it) made its entry's page a 500, because
+ * TableTooLarge left the table's augmentation uncaught while a chart's
+ * caught it. The page is served, with a notice in the table's place that
+ * says what is wrong and where to fix it, and one line in the log.
+ */
+it('serves the page of an entry whose stored table is past the limits, with a notice in its place', function () {
+    makeCollection();
+
+    $wide = figures();
+    $wide['rows'][1]['cells'][1] = ['value' => 12, 'colspan' => Limits::COLUMNS];
+
+    $entry = Entry::make()->collection('reports')->slug('wide')->data([
+        'title' => 'Wide',
+        'figures' => $wide,
+        'picture' => ['type' => 'bar', 'source' => 'field', 'table' => 'figures'],
+    ]);
+    $entry->save();
+
+    Log::spy();
+
+    $this->withFakeViews();
+    $this->viewShouldReturnRaw('layout', '{{ template_content }}');
+    $this->viewShouldReturnRaw('report', '{{ figures }}|{{ figures:caption }}|{{ if figures:missing }}missing{{ /if }}|{{ a11y_data:table field="figures" }}|{{ a11y_data:table :data="figures" id="again" }}|{{ picture }}');
+
+    $start = hrtime(true);
+    $html = $this->get('/reports/wide')->assertOk()->getContent();
+    expect((hrtime(true) - $start) / 1e9)->toBeLessThan(2.0);
+
+    [$table, $caption, $missing, $tagTable, $tagData, $chart] = explode('|', $html);
+
+    // The field, printed: a paragraph, not a table, saying what and where.
+    expect($table)->toStartWith('<p');
+    expect($table)->toContain('a11y-data-table--missing');
+    expect($table)->toContain('This table cannot be displayed');
+    expect($table)->toContain('wider than '.Limits::COLUMNS);
+    expect($table)->toContain('control panel');
+    expect($table)->not->toContain('<table');
+    expect($table)->not->toContain('<svg');
+
+    // Its parts are still there by path.
+    expect($caption)->toBe('Apples per year');
+    expect($missing)->toBe('missing');
+
+    // The tag, from the field and from the data: the same notice.
+    expect($tagTable)->toBe($table);
+    expect($tagData)->toContain('a11y-data-table--missing');
+    expect($tagData)->toContain('id="again"');
+    expect($tagData)->toContain('wider than '.Limits::COLUMNS);
+
+    // The chart of it is a notice too, as before.
+    expect($chart)->toContain('a11y-data-chart--missing');
+    expect($chart)->toContain('cannot be drawn');
+
+    // Three renderings of one problem, one line in the log for the table
+    // (the chart's notice is its own line), at warning.
+    Log::shouldHaveReceived('warning')
+        ->with(\Mockery::pattern('/^A11y data table not rendered: This table cannot be displayed: .*wider than/'), \Mockery::type('array'))
+        ->once();
+    Log::shouldHaveReceived('warning')->twice();
+});
+
+it('shows a notice for a stored table past the limits in augmentation alone, with the caption kept', function () {
+    makeCollection();
+
+    $tall = figures();
+    $tall['rows'] = array_merge($tall['rows'], array_fill(0, Limits::ROWS, ['header' => false, 'cells' => [['value' => 'y'], ['value' => 1]]]));
+
+    $entry = Entry::make()->collection('reports')->slug('tall')->data(['title' => 'Tall', 'figures' => $tall]);
+    $entry->save();
+
+    $start = hrtime(true);
+    $value = Entry::find($entry->id())->augmentedValue('figures')->value();
+    expect((hrtime(true) - $start) / 1e9)->toBeLessThan(2.0);
+
+    expect($value)->toBeInstanceOf(Rendered::class);
+    expect($value->html())->toStartWith('<p');
+    expect($value->html())->toContain('The table has '.(Limits::ROWS + 3).' rows');
+    expect($value->html())->toContain('at most '.Limits::ROWS.' rows');
+    expect($value['missing'])->toBeTrue();
+    expect($value['caption'])->toBe('Apples per year');
 });

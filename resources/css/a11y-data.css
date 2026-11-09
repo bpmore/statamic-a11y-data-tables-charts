@@ -82,6 +82,15 @@
     outline-offset: 2px;
 }
 
+/* A table or chart that cannot be rendered says so, in its place, as a
+   paragraph a reader can see rather than a blank where it should be. */
+.a11y-data-table--missing,
+.a11y-data-chart--missing {
+    overflow: visible;
+    padding: 0.75em 1em;
+    border: 2px solid currentColor;
+}
+
 /* Print: no scroll region, and the chart on the page whole. */
 @media print {
     .a11y-data-table {

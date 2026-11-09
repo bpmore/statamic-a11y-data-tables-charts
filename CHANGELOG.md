@@ -9,8 +9,15 @@
   every row and column the span covered. A table past a limit is now refused
   on save with a message, a stored span past the limit is clamped as it is
   read, and the grid refuses to lay out a table wider or taller than the
-  limits before it makes a slot. Every table within the limits renders as
-  before.
+  limits before it makes a slot. An out-of-limit stored table (one written
+  by hand or through the API, which the rule never saw) shows a notice
+  instead of rendering: a paragraph in the table's place, with the class
+  `a11y-data-table--missing`, saying the table is too large and how to fix
+  it in the control panel, logged once per request at warning level. The
+  page is served, as it already was for a chart that cannot be drawn.
+  `{{ my_table:missing }}` is true in that case. The `a11y_data:table` and
+  `a11y_data:chart` tags do the same for a `:data` table they cannot
+  render. Every table within the limits renders as before.
 
 ## 0.1.4 (26 October 2026)
 

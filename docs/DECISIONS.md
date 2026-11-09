@@ -107,8 +107,11 @@ never validated (a file edited by hand, or an API write) is clamped,
 because a page is not where an author can act on a message. Too many rows
 or too wide a grid cannot be clamped without dropping cells, which the
 "spans merge" entry above already rules out, so the grid throws
-`TableTooLarge` for those, and a chart shows it as a notice like any
-other reason it cannot be drawn.
+`TableTooLarge` for those. The renderers stay pure and throw; the Statamic
+layer (the fieldtypes' `augment`, the tag) catches at the point of output
+and shows a notice in the element's place, for a table as a chart already
+did for any reason it cannot be drawn, so a stored value the rule never saw
+costs the page one paragraph and one warning in the log, not a 500.
 
 The ceilings are constants, not config. A site that needs a wider table
 than a hundred columns needs something other than an accessible HTML

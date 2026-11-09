@@ -7,8 +7,10 @@ namespace Bpmore\A11yDataTablesCharts\Fieldtypes;
 use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
 use Bpmore\A11yDataTablesCharts\Rules\ValidTable;
 use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Notice;
 use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
 use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
+use InvalidArgumentException;
 use Statamic\Fields\Fieldtype;
 
 /**
@@ -93,7 +95,11 @@ final class A11yTable extends Fieldtype
 
     /**
      * What a template gets: the table's markup as a string, and its parts
-     * by path. Null for nothing.
+     * by path. Null for nothing. A stored table the renderer refuses (one
+     * past the limits, or without a caption, written by hand or through
+     * the API so the rule never saw it) is a visible notice in the
+     * table's place, as a chart that cannot be drawn is, and never an
+     * exception: a page is not where an author can act on one.
      */
     public function augment($value): ?Rendered
     {
@@ -107,8 +113,14 @@ final class A11yTable extends Fieldtype
             return null;
         }
 
-        $dataset = Dataset::fromArray($table);
-        $html = (new TableRenderer)->render($dataset, ['id' => $this->elementId()]);
+        $id = $this->elementId();
+
+        try {
+            $dataset = Dataset::fromArray($table);
+            $html = (new TableRenderer)->render($dataset, ['id' => $id]);
+        } catch (InvalidArgumentException $e) {
+            return Notice::rendered(Notice::TABLE, $id, Notice::tableMessage($e), $table, ['field' => $this->field()?->handle()]);
+        }
 
         return Rendered::make($html, $dataset->toArray());
     }
