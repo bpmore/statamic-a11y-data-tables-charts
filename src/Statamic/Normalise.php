@@ -6,6 +6,7 @@ namespace Bpmore\A11yDataTablesCharts\Statamic;
 
 use Bpmore\A11yDataTablesCharts\Dataset\Cell;
 use Bpmore\A11yDataTablesCharts\Dataset\Column;
+use Bpmore\A11yDataTablesCharts\Dataset\Limits;
 use Bpmore\A11yDataTablesCharts\Dataset\Row;
 
 /**
@@ -42,7 +43,10 @@ final class Normalise
             fn ($c) => Column::fromArray(is_array($c) ? $c : ['label' => $c])->toArray(),
             array_values(is_array($data['columns'] ?? null) ? $data['columns'] : []),
         );
-        while (count($columns) < $width) {
+        // Padded no further than a grid can be wide. A table wider than that
+        // is refused on save and at render; this is so the padding itself
+        // never costs what the refusal saves.
+        while (count($columns) < min($width, Limits::COLUMNS)) {
             $columns[] = (new Column(''))->toArray();
         }
 

@@ -8,9 +8,9 @@ use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
 use Bpmore\A11yDataTablesCharts\Dataset\Dataset;
 use Bpmore\A11yDataTablesCharts\Rules\ValidChart;
 use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Notice;
 use Bpmore\A11yDataTablesCharts\Statamic\Palettes;
 use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
-use Bpmore\A11yDataTablesCharts\Support\Html;
 use InvalidArgumentException;
 use Statamic\Fields\Fieldtype;
 
@@ -146,10 +146,10 @@ final class A11yChart extends Fieldtype
         $data = $chart['source'] === 'inline' ? $chart['data'] : $this->referencedTable($chart['table']);
 
         if ($data === null || ! is_array($data) || Normalise::tableIsEmpty(Normalise::table($data))) {
-            return $this->notice($id, $chart, sprintf(
-                'This chart cannot be drawn: its data table (the "%s" field) is no longer on this entry.',
+            return $this->notice($id, $chart, Notice::chartMessage(sprintf(
+                'its data table (the "%s" field) is no longer on this entry.',
                 (string) $chart['table'],
-            ));
+            )));
         }
 
         try {
@@ -163,8 +163,9 @@ final class A11yChart extends Fieldtype
             ]);
         } catch (InvalidArgumentException $e) {
             // A missing caption, a palette that fails, a type that is not
-            // one of ours: shown, not thrown, and not blank.
-            return $this->notice($id, $chart, 'This chart cannot be drawn: '.$e->getMessage());
+            // one of ours, a table past the limits: shown, not thrown, and
+            // not blank.
+            return $this->notice($id, $chart, Notice::chartMessage($e->getMessage()));
         }
 
         return Rendered::make($html, [
@@ -196,9 +197,13 @@ final class A11yChart extends Fieldtype
     /** @param  array<string, mixed>  $chart */
     private function notice(string $id, array $chart, string $message): Rendered
     {
-        $html = '<p'.Html::attrs(['class' => 'a11y-data-chart a11y-data-chart--missing', 'id' => $id]).'>'.Html::e($message).'</p>';
-
-        return Rendered::make($html, ['type' => $chart['type'], 'source' => $chart['source'], 'table' => $chart['table'], 'summary' => $chart['summary'], 'missing' => true]);
+        return Notice::rendered(
+            Notice::CHART,
+            $id,
+            $message,
+            ['type' => $chart['type'], 'source' => $chart['source'], 'table' => $chart['table'], 'summary' => $chart['summary']],
+            ['field' => $this->field()?->handle()],
+        );
     }
 
     private function elementId(): string

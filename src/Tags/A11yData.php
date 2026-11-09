@@ -6,10 +6,13 @@ namespace Bpmore\A11yDataTablesCharts\Tags;
 
 use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
 use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
+use Bpmore\A11yDataTablesCharts\Statamic\Notice;
 use Bpmore\A11yDataTablesCharts\Statamic\Palettes;
 use Bpmore\A11yDataTablesCharts\Statamic\Rendered;
+use Bpmore\A11yDataTablesCharts\Support\Html;
 use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 use Illuminate\Contracts\Support\Arrayable;
+use InvalidArgumentException;
 use Statamic\Tags\Tags;
 
 /**
@@ -33,22 +36,35 @@ final class A11yData extends Tags
         return '<style>'.$css.'</style>';
     }
 
+    /**
+     * A `:data` table the renderer refuses (past the limits, or without a
+     * caption) is a notice in its place, as it is when a field renders
+     * itself; the page is served either way.
+     */
     public function table(): string
     {
         $data = $this->dataset();
 
-        if ($data !== null) {
-            return (new TableRenderer)->render($data, ['id' => $this->params->get('id'), 'class' => $this->params->get('class')]);
+        if ($data === null) {
+            return $this->fromField();
         }
 
-        return $this->fromField();
+        try {
+            return (new TableRenderer)->render($data, ['id' => $this->params->get('id'), 'class' => $this->params->get('class')]);
+        } catch (InvalidArgumentException $e) {
+            return Notice::html(Notice::TABLE, $this->noticeId(), Notice::tableMessage($e), ['tag' => 'a11y_data:table']);
+        }
     }
 
     public function chart(): string
     {
         $data = $this->dataset();
 
-        if ($data !== null) {
+        if ($data === null) {
+            return $this->fromField();
+        }
+
+        try {
             return (new ChartRenderer)->render($data, [
                 'type' => (string) $this->params->get('type', 'bar'),
                 'id' => $this->params->get('id'),
@@ -57,9 +73,17 @@ final class A11yData extends Tags
                 'table' => $this->params->get('table', config('statamic-a11y-data-tables-charts.data_table', 'open')),
                 'palette' => Palettes::configured(),
             ]);
+        } catch (InvalidArgumentException $e) {
+            return Notice::html(Notice::CHART, $this->noticeId(), Notice::chartMessage($e->getMessage()), ['tag' => 'a11y_data:chart']);
         }
+    }
 
-        return $this->fromField();
+    /** The `id` parameter, cleaned, for a notice; none when the template gave none, so two notices never share one. */
+    private function noticeId(): ?string
+    {
+        $id = $this->params->get('id');
+
+        return is_string($id) && trim($id) !== '' ? Html::id($id) : null;
     }
 
     /**

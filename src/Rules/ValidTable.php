@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bpmore\A11yDataTablesCharts\Rules;
 
+use Bpmore\A11yDataTablesCharts\Dataset\Limits;
 use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -12,6 +13,10 @@ use Illuminate\Contracts\Validation\ValidationRule;
  * A table field will not save without a caption. It is the accessible
  * name of the table, the single highest-value constraint in this addon,
  * and there is no field setting that turns it off.
+ *
+ * Nor will it save past the ceilings in Limits: a span, a row count or a
+ * width that the grid would refuse to lay out is refused here first, with
+ * a message, so the author learns at save time and not from the page.
  */
 final class ValidTable implements ValidationRule
 {
@@ -23,6 +28,14 @@ final class ValidTable implements ValidationRule
 
         if (! is_array($value)) {
             $fail('The table is not in a shape this field can read.');
+
+            return;
+        }
+
+        // Size first, on the raw shape: normalising pads the column list out
+        // to the widest row, and an outsized span is what makes a row wide.
+        if (($tooLarge = Limits::check($value)) !== null) {
+            $fail($tooLarge);
 
             return;
         }

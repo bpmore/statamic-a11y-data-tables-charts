@@ -80,7 +80,8 @@ would rather link it.
 
 The parts are there by path: `{{ figures:caption }}`, `{{ figures:rows }}`,
 `{{ picture:type }}`, `{{ picture:summary }}`. `{{ picture:missing }}` is true
-when the chart could not be drawn (see below).
+when the chart could not be drawn, and `{{ figures:missing }}` when the table
+could not be displayed (see below).
 
 The tags do the same thing explicitly, and also take a dataset built in the
 template:
@@ -143,6 +144,16 @@ cannot be read, the page shows a paragraph saying so in the chart's place,
 with the class `a11y-data-chart--missing`. Nothing is thrown and nothing is
 silently blank. `{{ picture:missing }}` is true in that case.
 
+## When a table cannot be displayed
+
+A stored table the renderer refuses, one past the limits below or without a
+caption, which can only have got there by hand or through the API since the
+editor will not save one, shows a paragraph in the table's place saying what
+is wrong and how to fix it in the control panel, with the class
+`a11y-data-table--missing`. The page is served. `{{ figures:missing }}` is true
+in that case, `{{ figures:caption }}` still has the caption, and each notice is
+logged once per request at warning level.
+
 ## What the addon does not do
 
 - It is not a spreadsheet. No formulas, sorting, filtering or pagination.
@@ -154,6 +165,10 @@ silently blank. `{{ picture:missing }}` is true in that case.
   between the series colours and the background you tell it about.
 - It does not make an inaccessible caption accessible. "Table 1" passes the
   check; a caption that says what the table shows is the author's job.
+- It does not hold a table of any size. A cell spans at most 100 rows or
+  columns, and a table has at most 1000 rows and 100 columns; a table past
+  that is refused on save with a message. A data table larger than that is
+  not something a page should carry.
 
 ## Conformance
 

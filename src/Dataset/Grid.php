@@ -36,9 +36,25 @@ final class Grid
         return self::layout($rows, 0)->width;
     }
 
-    /** @param  list<Row>  $rows */
+    /**
+     * Never more than Limits::ROWS by Limits::COLUMNS slots, whatever the
+     * rows say: a table past either is refused before a slot is made.
+     *
+     * @param  list<Row>  $rows
+     *
+     * @throws TableTooLarge
+     */
     private static function layout(array $rows, int $minWidth): self
     {
+        $height = count($rows);
+
+        if ($height > Limits::ROWS) {
+            throw TableTooLarge::rows($height);
+        }
+        if ($minWidth > Limits::COLUMNS) {
+            throw TableTooLarge::columns();
+        }
+
         $slots = [];
         $placed = [];
         $width = $minWidth;
@@ -50,10 +66,18 @@ final class Grid
                     $c++;
                 }
 
+                if ($c + $cell->colspan > Limits::COLUMNS) {
+                    throw TableTooLarge::columns();
+                }
+
                 $p = new Placed($cell, $r, $c);
                 $placed[] = $p;
 
-                for ($dr = 0; $dr < $cell->rowspan; $dr++) {
+                // A rowspan can reach past the last row; those slots are
+                // not made, as a browser does not make them.
+                $rowspan = min($cell->rowspan, $height - $r);
+
+                for ($dr = 0; $dr < $rowspan; $dr++) {
                     for ($dc = 0; $dc < $cell->colspan; $dc++) {
                         $slots[$r + $dr][$c + $dc] = $p;
                     }
@@ -64,11 +88,7 @@ final class Grid
             }
         }
 
-        // A rowspan can reach past the last row; those slots are dropped,
-        // as a browser drops them.
-        $slots = array_intersect_key($slots, $rows);
-
-        return new self($slots, $placed, $width, count($rows));
+        return new self($slots, $placed, $width, $height);
     }
 
     /** The cell covering a slot, whether it starts there or spans into it. */

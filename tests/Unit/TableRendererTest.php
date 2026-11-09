@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Bpmore\A11yDataTablesCharts\Dataset\Limits;
 use Bpmore\A11yDataTablesCharts\Dataset\MissingCaption;
+use Bpmore\A11yDataTablesCharts\Dataset\TableTooLarge;
 use Bpmore\A11yDataTablesCharts\Table\TableRenderer;
 
 /**
@@ -223,3 +225,32 @@ it('handles rowspan when pairing headers', function () {
     expect($headersOf('1'))->toBe($sorted([$fruit, $apple, $value]));
     expect($headersOf('2'))->toBe($sorted([$fruit, $pear, $value]));
 });
+
+/**
+ * Regression: a stored cell with spans in the millions once made the grid
+ * allocate rowspan times colspan slots and die of memory on every render
+ * of the entry. The span is clamped as it is read, so the render is an
+ * ordinary one. Timed, so a slow path fails rather than hangs the suite.
+ */
+it('renders a table whose stored spans are enormous, clamped, in ordinary time', function () {
+    $start = hrtime(true);
+
+    $html = (new TableRenderer)->render([
+        'caption' => 'Outsized spans',
+        'columns' => [['label' => 'A', 'type' => 'text', 'header' => true], ['label' => 'B', 'type' => 'number']],
+        'rows' => [
+            ['header' => true, 'cells' => [['value' => 'A'], ['value' => 'B']]],
+            ['cells' => [['value' => 'x', 'colspan' => 1_000_000_000, 'rowspan' => 1_000_000_000]]],
+        ],
+    ]);
+
+    expect((hrtime(true) - $start) / 1e9)->toBeLessThan(2.0);
+
+    $x = dom($html);
+    expect(nodes($x, "//*[@colspan='".Limits::SPAN."'][@rowspan='".Limits::SPAN."']"))->toHaveCount(1);
+    expect($html)->not->toContain('1000000000');
+});
+
+it('refuses to render a table wider than the limit', function () {
+    (new TableRenderer)->render(['caption' => 'Wide', 'columns' => [], 'rows' => [array_fill(0, Limits::COLUMNS + 1, ['value' => 1])]]);
+})->throws(TableTooLarge::class);
