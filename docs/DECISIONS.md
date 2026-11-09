@@ -87,3 +87,29 @@ the editors are Vue 3 components on the 6.x UI kit. The floor is 6.31 because
 that is the oldest version Composer will install today; every earlier 6.x
 release is blocked by a security advisory, so a lower floor could not be
 tested.
+
+## A table has ceilings, and a save past one is refused rather than trimmed
+
+Decided 9 November 2026. A span is a number the stored shape carries, and
+the grid makes rowspan times colspan slots for each cell, so a cell saying
+it spanned a million of each took every render of its entry down with
+memory exhaustion. The ceilings in `Dataset\Limits` (100 for a span, 1000
+rows, 100 columns) sit far past any data table a page should carry: the
+editor cannot make a span larger than the table, and a table that size
+would not be readable in a control panel grid.
+
+Three readings for a span past the ceiling: clamp it everywhere and say
+nothing, refuse it on save and clamp it at render, or refuse it on save and
+throw at render. The middle one was chosen. On save, an author is told
+rather than trimmed, because a silently shortened span is a table that
+says something other than what was typed. At render, a span that was
+never validated (a file edited by hand, or an API write) is clamped,
+because a page is not where an author can act on a message. Too many rows
+or too wide a grid cannot be clamped without dropping cells, which the
+"spans merge" entry above already rules out, so the grid throws
+`TableTooLarge` for those, and a chart shows it as a notice like any
+other reason it cannot be drawn.
+
+The ceilings are constants, not config. A site that needs a wider table
+than a hundred columns needs something other than an accessible HTML
+table, and a setting would be one more thing a reviewer has to check.

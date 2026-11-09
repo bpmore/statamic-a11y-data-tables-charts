@@ -154,6 +154,10 @@ silently blank. `{{ picture:missing }}` is true in that case.
   between the series colours and the background you tell it about.
 - It does not make an inaccessible caption accessible. "Table 1" passes the
   check; a caption that says what the table shows is the author's job.
+- It does not hold a table of any size. A cell spans at most 100 rows or
+  columns, and a table has at most 1000 rows and 100 columns; a table past
+  that is refused on save with a message. A data table larger than that is
+  not something a page should carry.
 
 ## Conformance
 

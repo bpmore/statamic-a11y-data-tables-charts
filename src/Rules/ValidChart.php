@@ -7,6 +7,7 @@ namespace Bpmore\A11yDataTablesCharts\Rules;
 use Bpmore\A11yDataTablesCharts\Chart\ChartRenderer;
 use Bpmore\A11yDataTablesCharts\Chart\Palette;
 use Bpmore\A11yDataTablesCharts\Chart\PaletteCheck;
+use Bpmore\A11yDataTablesCharts\Dataset\Limits;
 use Bpmore\A11yDataTablesCharts\Statamic\Normalise;
 use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
@@ -55,7 +56,11 @@ final class ValidChart implements DataAwareRule, ValidationRule
         }
 
         if ($chart['source'] === 'inline') {
-            if (($chart['data']['caption'] ?? '') === '') {
+            // Inline data is a table of its own, with no table field's rule
+            // to refuse it, so its size is checked here on the raw shape.
+            if (($tooLarge = Limits::check(is_array($value['data'] ?? null) ? $value['data'] : [])) !== null) {
+                $fail($tooLarge);
+            } elseif (($chart['data']['caption'] ?? '') === '') {
                 $fail('The chart data needs a caption. It names the chart and its data table.');
             }
         } else {

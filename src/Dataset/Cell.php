@@ -28,10 +28,20 @@ final class Cell
 
         return new self(
             self::text($cell['value'] ?? null),
-            max(1, (int) ($cell['colspan'] ?? 1)),
-            max(1, (int) ($cell['rowspan'] ?? 1)),
+            self::span($cell['colspan'] ?? 1),
+            self::span($cell['rowspan'] ?? 1),
             $abbr === '' ? null : $abbr,
         );
+    }
+
+    /**
+     * A span as stored, held between 1 and Limits::SPAN. The grid makes a
+     * slot for every row and column a cell covers, so a span is clamped
+     * here, where it is read, and no renderer ever sees one past the limit.
+     */
+    private static function span(mixed $value): int
+    {
+        return min(Limits::SPAN, max(1, (int) $value));
     }
 
     public function isEmpty(): bool

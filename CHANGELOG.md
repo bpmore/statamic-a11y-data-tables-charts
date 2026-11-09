@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- A table has limits: a cell spans at most 100 rows or columns, a table has
+  at most 1000 rows and 100 columns. Before, a saved cell with a span in the
+  millions made every render of the entry (the page, live preview, the tag,
+  the entry listing) run out of memory, because the grid made a slot for
+  every row and column the span covered. A table past a limit is now refused
+  on save with a message, a stored span past the limit is clamped as it is
+  read, and the grid refuses to lay out a table wider or taller than the
+  limits before it makes a slot. Every table within the limits renders as
+  before.
+
 ## 0.1.4 (26 October 2026)
 
 - The Composer download leaves out what builds and tests the addon: the
